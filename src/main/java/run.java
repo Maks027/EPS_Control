@@ -1,44 +1,24 @@
-import jssc.SerialPort;
-import jssc.SerialPortEventListener;
-import jssc.SerialPortException;
-import jssc.SerialPortList;
-
+import com.fazecast.jSerialComm.SerialPort;
 
 public class run {
 
-    public static void main(String[] args) throws SerialPortException {
+    public static void main(String[] args) {
 
-//        SerialPort a = new SerialPort("COM3");
-
-        String[] ports = SerialPortList.getPortNames();
-
-        for (int i = 0 ; i < ports.length ; i++) {
-            System.out.println(ports[i]);
-        }
-
-        SerialPort serialPort = new SerialPort("COM3");
+        SerialPort serialPort = SerialPort.getCommPort("COM3");
 
         serialPort.openPort();
+        serialPort.setComPortParameters(115200,
+                                         8,
+                                        SerialPort.ONE_STOP_BIT,
+                                        SerialPort.NO_PARITY);
 
-        serialPort.setParams(SerialPort.BAUDRATE_115200,
-                             SerialPort.DATABITS_8,
-                             SerialPort.STOPBITS_1,
-                             SerialPort.PARITY_NONE);
-
-        if (serialPort.isOpened()){
-            System.out.println("Port opened");
+        if(serialPort.isOpen()){
+            System.out.println("Opened");
         }
         else {
-            System.out.println("Port closed");
+            System.out.println("Closed");
         }
 
-        serialPort.closePort();
-
-        if (serialPort.isOpened()){
-            System.out.println("Port opened");
-        }
-        else {
-            System.out.println("Port closed");
-        }
     }
+
 }
