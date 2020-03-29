@@ -27,6 +27,12 @@ public class mainForm {
     private JTextField textField2;
     private JTextField textField3;
     private JTextField textField4;
+    private JPanel portPanel;
+    private JTextField textField5;
+    private JCheckBox OFFCheckBox1;
+    private JTextField textField6;
+    private JTextField textField7;
+    private JCheckBox checkBox1;
 
     SerialPort port;
 
