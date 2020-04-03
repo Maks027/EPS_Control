@@ -38,12 +38,12 @@ public class Storage {
         Element subParam = document.createElement("parameter");
         rootElement.appendChild(subParam);
 
-        Attr attr = document.createAttribute("name");
-        attr.setValue(parameter.getName());
+        Attr attr = document.createAttribute("id");
+        attr.setValue(parameter.getId().name());
         subParam.setAttributeNode(attr);
 
-        Element id = document.createElement("id");
-        id.appendChild(document.createTextNode(String.valueOf(parameter.getId())));
+        Element id = document.createElement("address");
+        id.appendChild(document.createTextNode(String.valueOf(parameter.getAddress())));
         subParam.appendChild(id);
 
         Element adcValue = document.createElement("adcValue");
@@ -75,19 +75,15 @@ public class Storage {
 
         DefaultParameters defaultParameters = new DefaultParameters();
 
-        List<Parameter> list = defaultParameters.getParameterList();
-
 
         Storage storage = new Storage();
 
-        defaultParameters.modifyVal(5, 4.2, list);
 
-        for(Parameter p: list){
+        for(Parameter p: defaultParameters.getParameters()){
             storage.createElement(p);
         }
 
         storage.writeToFile();
-
     }
 
 

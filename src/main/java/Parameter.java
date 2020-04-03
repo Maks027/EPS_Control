@@ -1,10 +1,17 @@
 public class Parameter {
-    private int id;
+    private int address;
     private int adcValue;
-    private String name;
-
     private double k;
     private double doubleValue;
+    P_ID id;
+
+    public Parameter(){}
+
+    public Parameter(P_ID id, int address, double value) {
+        this.address = address;
+        this.doubleValue = value;
+        this.id = id;
+    }
 
     public double getDoubleValue() {
         return doubleValue;
@@ -22,12 +29,12 @@ public class Parameter {
         this.k = k;
     }
 
-    public int getId() {
-        return id;
+    public int getAddress() {
+        return address;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setAddress(int address) {
+        this.address = address;
     }
 
     public int getAdcValue() {
@@ -38,29 +45,20 @@ public class Parameter {
         this.adcValue = adcValue;
     }
 
-    public String getName() {
-        return name;
+    public P_ID getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Parameter(){
-
-    }
-
-    public Parameter(String name, int id, double value, double k) {
+    public void setId(P_ID id) {
         this.id = id;
-        this.doubleValue = value;
-        this.k = k;
-        this.adcValue = floatToADC(value, k);
-        this.name = name;
     }
-
-
 
     public int floatToADC(double val, double k){
         return (int)Math.round(val * k);
+    }
+
+    public void calcAdcVal(double val, double k){
+        this.k = k;
+        this.adcValue = floatToADC(val, this.k);
     }
 }
