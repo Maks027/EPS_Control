@@ -58,6 +58,8 @@ public class Parameter {
         this.name = name;
     }
 
+
+
     public int floatToADC(double val, double k){
         return (int)Math.round(val * k);
     }

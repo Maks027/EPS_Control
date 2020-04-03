@@ -1,14 +1,21 @@
 import com.fazecast.jSerialComm.SerialPort;
 
 import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
 
 public class mainForm {
 
+    List<Parameter> list;
+    DefaultParameters defaultParameters;
+    Storage storage;
 
     private JPanel panel1;
     private JButton ScanButton;
@@ -102,7 +109,9 @@ public class mainForm {
 
     SerialPort port;
 
-    public mainForm() {
+    public mainForm() throws ParserConfigurationException {
+        storage = new Storage();
+
         ScanButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SerialPort[] ports = SerialPort.getCommPorts();
@@ -157,12 +166,53 @@ public class mainForm {
                 send.sendMessage(0x5566, 0x7788, port);
             }
         });
+
+
+        textField_vbat.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                defaultParameters.modifyVal(1, Double.valueOf(textField_vbat.getText()), list);
+                for(Parameter p: list){
+                    storage.createElement(p);
+                }
+
+                try {
+                    storage.writeToFile();
+                } catch (TransformerException ex) {
+                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        setDefaultTextFields();
+
     }
 
-    public static void main(String[] args) {
+    public void setDefaultTextFields(){
+        defaultParameters = new DefaultParameters();
+        list = defaultParameters.getParameterList();
 
+        textField_vbat.setText(String.valueOf(defaultParameters.getValFromList(1, list)));
+        textField_ibat.setText(String.valueOf(defaultParameters.getValFromList(2, list)));
+        textField_BCRVoltage.setText(String.valueOf(defaultParameters.getValFromList(3, list)));
+        textField_BCRCurrent.setText(String.valueOf(defaultParameters.getValFromList(4, list)));
+        textField_XVoltage.setText(String.valueOf(defaultParameters.getValFromList(5, list)));
+        textField_XCurrentPos.setText(String.valueOf(defaultParameters.getValFromList(6, list)));
+        textField_XCurrentNeg.setText(String.valueOf(defaultParameters.getValFromList(7, list)));
+        textField_YVoltage.setText(String.valueOf(defaultParameters.getValFromList(8, list)));
+        textField_YCurrentPos.setText(String.valueOf(defaultParameters.getValFromList(9, list)));
+        textField_YCurrentNeg.setText(String.valueOf(defaultParameters.getValFromList(10, list)));
+        textField_ZVoltage.setText(String.valueOf(defaultParameters.getValFromList(11, list)));
+        textField_ZCurrentPos.setText(String.valueOf(defaultParameters.getValFromList(12, list)));
+        textField_ZCurrentNeg.setText(String.valueOf(defaultParameters.getValFromList(13, list)));
+        textField_3V3Current.setText(String.valueOf(defaultParameters.getValFromList(14, list)));
+        textField__5VCurrent.setText(String.valueOf(defaultParameters.getValFromList(15, list)));
 
+    }
 
+    public static void main(String[] args) throws ParserConfigurationException {
+        
         JFrame frame = new JFrame("EPS Simulator");
         frame.setSize(1200, 700);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -68,6 +68,24 @@ public class DefaultParameters {
         }
     }
 
+    public double getValFromList(int id, List<Parameter> list){
+        for(Parameter p: list){
+            if (p.getId() == id) {
+                return p.getDoubleValue();
+            }
+        }
+        return 0;
+    }
+
+    public double getValFromList(String name, List<Parameter> list){
+        for(Parameter p: list){
+            if (p.getName().equals(name)) {
+                return p.getDoubleValue();
+            }
+        }
+        return 0;
+    }
+
     public List<Parameter> getParameterList() {
         return parameterList;
     }
