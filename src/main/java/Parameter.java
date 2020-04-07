@@ -1,7 +1,7 @@
 public class Parameter {
     private int address;
     private int adcValue;
-    private double k;
+    private double k = 0;
     private double doubleValue;
     P_ID id;
 
@@ -13,12 +13,28 @@ public class Parameter {
         this.id = id;
     }
 
+    public Parameter(P_ID id, int address, double value, double ADCRef) {
+        this.address = address;
+        this.doubleValue = value;
+        this.id = id;
+
+        this.k = 4095 / ADCRef;
+        this.adcValue = (int)Math.round(this.k * this.doubleValue);
+    }
+
     public double getDoubleValue() {
         return doubleValue;
     }
 
     public void setDoubleValue(double doubleValue) {
         this.doubleValue = doubleValue;
+        reCalcAdcVal();
+    }
+
+    public void setDoubleValue(String stringValue) {
+        this.doubleValue = Double.valueOf(stringValue);
+        if (this.k != 0)
+            reCalcAdcVal();
     }
 
     public double getK() {
@@ -53,12 +69,7 @@ public class Parameter {
         this.id = id;
     }
 
-    public int floatToADC(double val, double k){
-        return (int)Math.round(val * k);
-    }
-
-    public void calcAdcVal(double k){
-        this.k = k;
-        this.adcValue = floatToADC(this.doubleValue, this.k);
+    public void reCalcAdcVal(){
+        this.adcValue = (int)Math.round(this.getDoubleValue() * this.k);
     }
 }

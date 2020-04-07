@@ -9,23 +9,23 @@ public class DefaultParameters {
 
     public DefaultParameters() {
 
-        parameterMap = new HashMap<P_ID, Parameter>();
+        parameterMap = new HashMap<>();
 
-        parameterMap.put(P_ID.BATTERY_VOLTAGE,  new Parameter(P_ID.BATTERY_VOLTAGE,   1, 2.2));
-        parameterMap.put(P_ID.BATTERY_CURRENT,  new Parameter(P_ID.BATTERY_CURRENT,   2, 0));
-        parameterMap.put(P_ID.BCR_VOLTAGE,      new Parameter(P_ID.BCR_VOLTAGE,       3, 0));
-        parameterMap.put(P_ID.BCR_CURRENT,      new Parameter(P_ID.BCR_CURRENT,       4, 0));
-        parameterMap.put(P_ID.X_VOLTAGE,        new Parameter(P_ID.X_VOLTAGE,         5, 0));
-        parameterMap.put(P_ID.X_POS_CURRENT,    new Parameter(P_ID.X_POS_CURRENT,     6, 0));
-        parameterMap.put(P_ID.X_NEG_CURRENT,    new Parameter(P_ID.X_NEG_CURRENT,     7, 0));
-        parameterMap.put(P_ID.Y_VOLTAGE,        new Parameter(P_ID.Y_VOLTAGE,         8, 1.2));
-        parameterMap.put(P_ID.Y_POS_CURRENT,    new Parameter(P_ID.Y_POS_CURRENT,     9, 0));
-        parameterMap.put(P_ID.Y_NEG_CURRENT,    new Parameter(P_ID.Y_NEG_CURRENT,     10, 0));
-        parameterMap.put(P_ID.Z_VOLTAGE,        new Parameter(P_ID.Z_VOLTAGE,         11, 0));
-        parameterMap.put(P_ID.Z_POS_CURRENT,    new Parameter(P_ID.Z_POS_CURRENT,    12, 0));
-        parameterMap.put(P_ID.Z_NEG_CURRENT,    new Parameter(P_ID.Z_NEG_CURRENT,     13, 0));
-        parameterMap.put(P_ID.CURRENT_3V3,      new Parameter(P_ID.CURRENT_3V3,       14, 0));
-        parameterMap.put(P_ID.CURRENT_5V,       new Parameter(P_ID.CURRENT_5V,        15, 0));
+        parameterMap.put(P_ID.BATTERY_VOLTAGE,  new Parameter(P_ID.BATTERY_VOLTAGE,   1, 2.2, 3.3));
+        parameterMap.put(P_ID.BATTERY_CURRENT,  new Parameter(P_ID.BATTERY_CURRENT,   2, 0,   3.3));
+        parameterMap.put(P_ID.BCR_VOLTAGE,      new Parameter(P_ID.BCR_VOLTAGE,       3, 0,   3.3));
+        parameterMap.put(P_ID.BCR_CURRENT,      new Parameter(P_ID.BCR_CURRENT,       4, 0,   3.3));
+        parameterMap.put(P_ID.X_VOLTAGE,        new Parameter(P_ID.X_VOLTAGE,         5, 0,   3.3));
+        parameterMap.put(P_ID.X_POS_CURRENT,    new Parameter(P_ID.X_POS_CURRENT,     6, 0,   3.3));
+        parameterMap.put(P_ID.X_NEG_CURRENT,    new Parameter(P_ID.X_NEG_CURRENT,     7, 0,   3.3));
+        parameterMap.put(P_ID.Y_VOLTAGE,        new Parameter(P_ID.Y_VOLTAGE,         8, 1.2,   3.3));
+        parameterMap.put(P_ID.Y_POS_CURRENT,    new Parameter(P_ID.Y_POS_CURRENT,     9, 0,   3.3));
+        parameterMap.put(P_ID.Y_NEG_CURRENT,    new Parameter(P_ID.Y_NEG_CURRENT,     10, 0,   3.3));
+        parameterMap.put(P_ID.Z_VOLTAGE,        new Parameter(P_ID.Z_VOLTAGE,         11, 0,   3.3));
+        parameterMap.put(P_ID.Z_POS_CURRENT,    new Parameter(P_ID.Z_POS_CURRENT,    12, 0,   3.3));
+        parameterMap.put(P_ID.Z_NEG_CURRENT,    new Parameter(P_ID.Z_NEG_CURRENT,     13, 0,   3.3));
+        parameterMap.put(P_ID.CURRENT_3V3,      new Parameter(P_ID.CURRENT_3V3,       14, 0,   3.3));
+        parameterMap.put(P_ID.CURRENT_5V,       new Parameter(P_ID.CURRENT_5V,        15, 0,   3.3));
         parameterMap.put(P_ID.LUP_3V3,          new Parameter(P_ID.LUP_3V3,           16, 0));
         parameterMap.put(P_ID.LUP_5V,           new Parameter(P_ID.LUP_5V,            17, 0));
         parameterMap.put(P_ID.MCU_TEMP,         new Parameter(P_ID.MCU_TEMP,          18, 0));
