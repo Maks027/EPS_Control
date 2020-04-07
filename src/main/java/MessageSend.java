@@ -1,12 +1,18 @@
 import com.fazecast.jSerialComm.SerialPort;
 
-public class messageSend {
+public class MessageSend {
+    SerialPort port;
 
     private final int PACKET_LENGTH = 8;
 
     private final byte START_BYTE1 = (byte)0x4A;
     private final byte START_BYTE2 = (byte)0x8B;
     private final byte STOP_BYTE = (byte)0xCC;
+
+
+    public MessageSend(SerialPort port){
+        this.port = port;
+    }
 
     private final int
             POS_START_BYTE1 = 0,
@@ -18,7 +24,7 @@ public class messageSend {
             POS_DATA_LSB 	= 6,
             POS_STOP_BYTE 	= 7;
 
-    public void sendMessage(int address, int data, SerialPort port){
+    public void sendMessage(int address, int data){
 
         byte[] buffer = new byte[PACKET_LENGTH];
 
@@ -33,5 +39,4 @@ public class messageSend {
 
         port.writeBytes(buffer, PACKET_LENGTH);
     }
-
 }

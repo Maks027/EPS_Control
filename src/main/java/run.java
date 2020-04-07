@@ -19,9 +19,9 @@ public class run {
 
         serialPort.addDataListener(receiver);
 
-        messageSend send = new messageSend();
+//        MessageSend send = new MessageSend();
 
-        send.sendMessage(0x5566,0x7788, serialPort);
+//        send.sendMessage(0x5566,0x7788, serialPort);
 
 //        serialPort.addDataListener(new SerialPortDataListener() {
 //            public int getListeningEvents() {

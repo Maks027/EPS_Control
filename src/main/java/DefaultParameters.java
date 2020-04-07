@@ -1,3 +1,5 @@
+import java.util.HashMap;
+import java.util.Map;
 
 public class DefaultParameters {
 
@@ -5,9 +7,11 @@ public class DefaultParameters {
 
     private Parameter[] parameters = new Parameter[48];
 
-
+    private Map<P_ID, Parameter> parameterMap;
 
     public DefaultParameters() {
+        parameterMap = new HashMap<P_ID, Parameter>();
+
 
         parameters[0] = new Parameter(P_ID.BATTERY_VOLTAGE,   1, 2.2);
         parameters[1] = new Parameter(P_ID.BATTERY_CURRENT,   2, 0);
@@ -62,10 +66,43 @@ public class DefaultParameters {
 
     }
 
+    public Parameter getParameterById(P_ID id){
+        for (Parameter p : this.parameters){
+            if (p.id == id){
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public void setParameterById(P_ID id, Parameter parameter){
+        for (Parameter p : this.parameters){
+            if (p.id == id){
+                p = parameter;
+            }
+        }
+    }
+
+    public int getAddrById(P_ID id){
+        for (Parameter p : this.parameters){
+            if (p.getId() == id)
+                return p.getAddress();
+        }
+        return 0;
+    }
+
     public double getValById(P_ID id){
         for (Parameter p : this.parameters){
             if (p.getId() == id)
                 return p.getDoubleValue();
+        }
+        return 0;
+    }
+
+    public int getADCValById(P_ID id){
+        for (Parameter p : this.parameters){
+            if (p.getId() == id)
+                return p.getAdcValue();
         }
         return 0;
     }
@@ -80,15 +117,28 @@ public class DefaultParameters {
 
     public void setValById(P_ID id, double newVal){
         for (Parameter p : this.parameters){
-            if (p.getId() == id)
+            if (p.getId() == id) {
                 p.setDoubleValue(newVal);
+                break;
+            }
         }
     }
 
     public void setValById(P_ID id, int newVal){
         for (Parameter p : this.parameters){
-            if (p.getId() == id)
+            if (p.getId() == id) {
                 p.setAdcValue(newVal);
+                break;
+            }
+        }
+    }
+
+    public void calcAdcValById(P_ID id, double k){
+        for (Parameter p : this.parameters){
+            if (p.getId() == id) {
+                p.setAdcValue((int)Math.round(p.getDoubleValue() * k));
+                break;
+            }
         }
     }
 

@@ -57,8 +57,8 @@ public class Parameter {
         return (int)Math.round(val * k);
     }
 
-    public void calcAdcVal(double val, double k){
+    public void calcAdcVal(double k){
         this.k = k;
-        this.adcValue = floatToADC(val, this.k);
+        this.adcValue = floatToADC(this.doubleValue, this.k);
     }
 }

@@ -1,6 +1,5 @@
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -69,6 +68,33 @@ public class Storage {
         transformer.transform(source, result);
     }
 
+    public void ParseFile(File file) throws ParserConfigurationException, IOException, SAXException {
+
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document document = dBuilder.parse(file);
+        document.getDocumentElement().normalize();
+        System.out.println("Root element: " + document.getDocumentElement().getNodeName());
+
+        NodeList nodeList = document.getElementsByTagName("parameter");
+
+        for (int i = 0 ; i < nodeList.getLength() ; i++){
+            Node node = nodeList.item(i);
+            System.out.println("Current element: " +  node.getNodeName());
+
+            if (node.getNodeType() == Node.ELEMENT_NODE){
+                Element element = (Element)node;
+                System.out.println("Parameter id: " + element.getAttribute("id"));
+
+                System.out.println("Parameter address: " + element.getElementsByTagName("address").item(0).getTextContent());
+                System.out.println("Parameter double value: " + element.getElementsByTagName("doubleValue").item(0).getTextContent());
+                System.out.println("Parameter ADC value: " + element.getElementsByTagName("adcValue").item(0).getTextContent());
+
+
+            }
+        }
+    }
+
 
 
     public static void main(String[] args) throws ParserConfigurationException, IOException, TransformerException {
@@ -78,12 +104,20 @@ public class Storage {
 
         Storage storage = new Storage();
 
+        File file = new File("F:\\parameters.xml");
 
-        for(Parameter p: defaultParameters.getParameters()){
-            storage.createElement(p);
+        try {
+            storage.ParseFile(file);
+        } catch (SAXException e) {
+            e.printStackTrace();
         }
 
-        storage.writeToFile();
+
+//        for(Parameter p: defaultParameters.getParameters()){
+//            storage.createElement(p);
+//        }
+//
+//        storage.writeToFile();
     }
 
 
