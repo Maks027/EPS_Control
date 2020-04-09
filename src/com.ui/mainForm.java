@@ -18,6 +18,7 @@ public class mainForm {
     Map<P_ID, Parameter> parameterMap;
 
     Map<Parameter, JTextField> fieldMap;
+    Map<Parameter, JCheckBox> checkBoxMap;
 
     Storage storage;
 
@@ -25,7 +26,7 @@ public class mainForm {
     private JButton ScanButton, connectButton, closeButton;
     private JTextArea textArea_terminal;
     private JLabel statusLabel;
-    private JComboBox comboBox1, comboBox_selectCom;
+    private JComboBox comboBox_selectCom;
 
     private JPanel      panel1, parametersPanel, statusPanel1, statusPanel2, statusPanel3, portPanel, panel_COM,
                         statusPanel4, statusPanel5, panel_conditions, panel_inputCond, panel_outCond;
@@ -46,6 +47,7 @@ public class mainForm {
 						textField_BCRVoltage, textField_BCRCurrent, textField_underVoltage, textField_shortCircuit, 
 						textField_overTemp, textField_tempSens5, textField_tempSens6, textField_tempSens7, textField_tempSens8, 
 						textField_tempMCU, textField_onCycles, textField_chargeCycles, textField_swVersion;
+    private JButton newWindow;
 
     MessageSend messageSend;
     SerialPort port;
@@ -57,18 +59,10 @@ public class mainForm {
         parameterMap = defaultParameters.getParameterMap();
 
         fieldMap = new HashMap<>();
+        checkBoxMap = new HashMap<>();
 
-        fieldMap.put(parameterMap.get(P_ID.BATTERY_VOLTAGE), textField_vbat);
-        fieldMap.put(parameterMap.get(P_ID.BATTERY_CURRENT), textField_ibat);
-        fieldMap.put(parameterMap.get(P_ID.BCR_VOLTAGE), textField_BCRVoltage);
-        fieldMap.put(parameterMap.get(P_ID.BCR_CURRENT), textField_BCRCurrent);
-
-
-
-
+        fillMaps();
         addAllListeners();
-
-
 
         ScanButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -114,17 +108,76 @@ public class mainForm {
             }
         });
 
-        setDefaultTextFields();
+    }
 
+    public void fillMaps(){
+        fieldMap.put(parameterMap.get(P_ID.BATTERY_VOLTAGE), textField_vbat);
+        fieldMap.put(parameterMap.get(P_ID.BATTERY_CURRENT), textField_ibat);
+        fieldMap.put(parameterMap.get(P_ID.BCR_VOLTAGE), textField_BCRVoltage);
+        fieldMap.put(parameterMap.get(P_ID.BCR_CURRENT), textField_BCRCurrent);
+        fieldMap.put(parameterMap.get(P_ID.X_VOLTAGE), textField_XVoltage);
+        fieldMap.put(parameterMap.get(P_ID.X_POS_CURRENT), textField_XCurrentPos);
+        fieldMap.put(parameterMap.get(P_ID.X_NEG_CURRENT), textField_XCurrentNeg);
+        fieldMap.put(parameterMap.get(P_ID.Y_VOLTAGE), textField_YVoltage);
+        fieldMap.put(parameterMap.get(P_ID.Y_POS_CURRENT), textField_YCurrentPos);
+        fieldMap.put(parameterMap.get(P_ID.Y_NEG_CURRENT), textField_YCurrentNeg);
+        fieldMap.put(parameterMap.get(P_ID.Z_VOLTAGE), textField_ZVoltage);
+        fieldMap.put(parameterMap.get(P_ID.Z_POS_CURRENT), textField_ZCurrentPos);
+        fieldMap.put(parameterMap.get(P_ID.Z_NEG_CURRENT), textField_ZCurrentNeg);
+        fieldMap.put(parameterMap.get(P_ID.CURRENT_3V3), textField_3V3Current);
+        fieldMap.put(parameterMap.get(P_ID.CURRENT_5V), textField__5VCurrent);
+
+        fieldMap.put(parameterMap.get(P_ID.MCU_TEMP), textField_tempMCU);
+        fieldMap.put(parameterMap.get(P_ID.BAT_TEMP_SENS1), textField_measTemp1);
+        fieldMap.put(parameterMap.get(P_ID.BAT_TEMP_SENS2), textField_measTemp2);
+        fieldMap.put(parameterMap.get(P_ID.BAT_TEMP_SENS3), textField_measTemp3);
+        fieldMap.put(parameterMap.get(P_ID.BAT_TEMP_SENS4), textField_measTemp4);
+        fieldMap.put(parameterMap.get(P_ID.INPUTS_COND), textField_inputCond);
+        fieldMap.put(parameterMap.get(P_ID.OUTPUTS_COND), textField_outCond);
+        fieldMap.put(parameterMap.get(P_ID.POWER_ON_CYCLES), textField_onCycles);
+        fieldMap.put(parameterMap.get(P_ID.BAT_UNDER_VOLTAGE), textField_underVoltage);
+        fieldMap.put(parameterMap.get(P_ID.BAT_SHORT_CIRCUIT), textField_shortCircuit);
+        fieldMap.put(parameterMap.get(P_ID.BAT_OVER_TEMP), textField_overTemp);
+        fieldMap.put(parameterMap.get(P_ID.MAX_TEMP1), textField_maxTemp1);
+        fieldMap.put(parameterMap.get(P_ID.MAX_TEMP2), textField_maxTemp2);
+        fieldMap.put(parameterMap.get(P_ID.MAX_TEMP3), textField_maxTemp3);
+        fieldMap.put(parameterMap.get(P_ID.MAX_TEMP4), textField_maxTemp4);
+        fieldMap.put(parameterMap.get(P_ID.MIN_TEMP1), textField_minTemp1);
+        fieldMap.put(parameterMap.get(P_ID.MIN_TEMP2), textField_minTemp2);
+        fieldMap.put(parameterMap.get(P_ID.MIN_TEMP3), textField_minTemp3);
+        fieldMap.put(parameterMap.get(P_ID.MIN_TEMP4), textField_minTemp4);
+        fieldMap.put(parameterMap.get(P_ID.TEMP_SENS5), textField_tempSens5);
+        fieldMap.put(parameterMap.get(P_ID.TEMP_SENS6), textField_tempSens6);
+        fieldMap.put(parameterMap.get(P_ID.TEMP_SENS7), textField_tempSens7);
+        fieldMap.put(parameterMap.get(P_ID.TEMP_SENS8), textField_tempSens8);
+        fieldMap.put(parameterMap.get(P_ID.SW_VERSION), textField_swVersion);
+        fieldMap.put(parameterMap.get(P_ID.CHARGE_CYCLES), textField_chargeCycles);
+
+        checkBoxMap.put(parameterMap.get(P_ID.LUP_3V3), checkBox_3V3LUP);
+        checkBoxMap.put(parameterMap.get(P_ID.LUP_5V), checkBox_5VLUP);
+        checkBoxMap.put(parameterMap.get(P_ID.BAT_FAST_CH), checkBox_fastCharge);
+        checkBoxMap.put(parameterMap.get(P_ID.V_OUT_1_DEF), checkBox_GPO1);
+        checkBoxMap.put(parameterMap.get(P_ID.V_OUT_3_DEF), checkBox_GPO3);
+        checkBoxMap.put(parameterMap.get(P_ID.V_OUT_4_DEF), checkBox_GPO4);
+        checkBoxMap.put(parameterMap.get(P_ID.V_OUT_5_DEF), checkBox_GPO5);
+        checkBoxMap.put(parameterMap.get(P_ID.V_OUT_6_DEF), checkBox_GPO6);
     }
 
     public void addTextChangeListener(P_ID id){
         Parameter parameter = parameterMap.get(id);
         fieldMap.get(parameter).addActionListener(e -> textChangeAction(id));
+
     }
+
+    public void addCheckBoxChangeListener(P_ID id){
+        Parameter parameter = parameterMap.get(id);
+        checkBoxMap.get(parameter).addActionListener(e -> textChangeAction(id));
+    }
+
 
     public void addAllListeners(){
         fieldMap.forEach((k, v) -> addTextChangeListener(k.getId()));
+        checkBoxMap.forEach((k, v) -> addCheckBoxChangeListener(k.getId()));
     }
 
     public void textChangeAction(P_ID id){
@@ -149,67 +202,6 @@ public class mainForm {
 //        messageSend.sendMessage(defaultParameters.getAddrById(id),defaultParameters.getADCValById(id));
     }
 
-    public void setDefaultTextFields(){
-        defaultParameters = new DefaultParameters();
-
-//        textField_vbat.setText(defaultParameters.getStringValById(P_ID.BATTERY_VOLTAGE));
-//        textField_ibat.setText(defaultParameters.getStringValById(P_ID.BATTERY_CURRENT));
-//        textField_BCRVoltage.setText(defaultParameters.getStringValById(P_ID.BCR_VOLTAGE));
-//        textField_BCRCurrent.setText(defaultParameters.getStringValById(P_ID.BCR_CURRENT));
-//        textField_XVoltage.setText(defaultParameters.getStringValById(P_ID.X_VOLTAGE));
-//        textField_XCurrentPos.setText(defaultParameters.getStringValById(P_ID.X_POS_CURRENT));
-//        textField_XCurrentNeg.setText(defaultParameters.getStringValById(P_ID.X_NEG_CURRENT));
-//        textField_YVoltage.setText(defaultParameters.getStringValById(P_ID.Y_VOLTAGE));
-//        textField_YCurrentPos.setText(defaultParameters.getStringValById(P_ID.Y_POS_CURRENT));
-//        textField_YCurrentNeg.setText(defaultParameters.getStringValById(P_ID.Y_NEG_CURRENT));
-//        textField_ZVoltage.setText(defaultParameters.getStringValById(P_ID.Z_VOLTAGE));
-//        textField_ZCurrentPos.setText(defaultParameters.getStringValById(P_ID.Z_POS_CURRENT));
-//        textField_ZCurrentNeg.setText(defaultParameters.getStringValById(P_ID.Z_NEG_CURRENT));
-//        textField_3V3Current.setText(defaultParameters.getStringValById(P_ID.CURRENT_3V3));
-//        textField__5VCurrent.setText(defaultParameters.getStringValById(P_ID.CURRENT_5V));
-//
-//        checkBox_3V3LUP.setSelected(defaultParameters.getValById(P_ID.LUP_3V3) != 0);
-//        checkBox_5VLUP.setSelected(defaultParameters.getValById(P_ID.LUP_5V) != 0);
-//
-//        textField_tempMCU.setText(defaultParameters.getStringValById(P_ID.MCU_TEMP));
-//        textField_measTemp1.setText(defaultParameters.getStringValById(P_ID.BAT_TEMP_SENS1));
-//        textField_measTemp2.setText(defaultParameters.getStringValById(P_ID.BAT_TEMP_SENS2));
-//        textField_measTemp3.setText(defaultParameters.getStringValById(P_ID.BAT_TEMP_SENS3));
-//        textField_measTemp4.setText(defaultParameters.getStringValById(P_ID.BAT_TEMP_SENS4));
-//
-//        textField_inputCond.setText(defaultParameters.getStringValById(P_ID.INPUTS_COND));
-//        textField_outCond.setText(defaultParameters.getStringValById(P_ID.OUTPUTS_COND));
-//        textField_onCycles.setText(defaultParameters.getStringValById(P_ID.POWER_ON_CYCLES));
-//        textField_underVoltage.setText(defaultParameters.getStringValById(P_ID.BAT_UNDER_VOLTAGE));
-//        textField_shortCircuit.setText(defaultParameters.getStringValById(P_ID.BAT_SHORT_CIRCUIT));
-//        textField_overTemp.setText(defaultParameters.getStringValById(P_ID.BAT_OVER_TEMP));
-//
-//        textField_maxTemp1.setText(defaultParameters.getStringValById(P_ID.MAX_TEMP1));
-//        textField_maxTemp2.setText(defaultParameters.getStringValById(P_ID.MAX_TEMP2));
-//        textField_maxTemp3.setText(defaultParameters.getStringValById(P_ID.MAX_TEMP3));
-//        textField_maxTemp4.setText(defaultParameters.getStringValById(P_ID.MAX_TEMP4));
-//
-//        textField_minTemp1.setText(defaultParameters.getStringValById(P_ID.MIN_TEMP1));
-//        textField_minTemp2.setText(defaultParameters.getStringValById(P_ID.MIN_TEMP2));
-//        textField_minTemp3.setText(defaultParameters.getStringValById(P_ID.MIN_TEMP3));
-//        textField_minTemp4.setText(defaultParameters.getStringValById(P_ID.MIN_TEMP4));
-//
-//        textField_tempSens5.setText(defaultParameters.getStringValById(P_ID.TEMP_SENS5));
-//        textField_tempSens6.setText(defaultParameters.getStringValById(P_ID.TEMP_SENS6));
-//        textField_tempSens7.setText(defaultParameters.getStringValById(P_ID.TEMP_SENS7));
-//        textField_tempSens8.setText(defaultParameters.getStringValById(P_ID.TEMP_SENS8));
-//
-//        textField_swVersion.setText(defaultParameters.getStringValById(P_ID.SW_VERSION));
-//
-//        checkBox_fastCharge.setSelected(defaultParameters.getValById(P_ID.BAT_FAST_CH) != 0);
-//        checkBox_GPO1.setSelected(defaultParameters.getValById(P_ID.V_OUT_1_DEF) != 0);
-//        checkBox_GPO3.setSelected(defaultParameters.getValById(P_ID.V_OUT_3_DEF) != 0);
-//        checkBox_GPO4.setSelected(defaultParameters.getValById(P_ID.V_OUT_4_DEF) != 0);
-//        checkBox_GPO5.setSelected(defaultParameters.getValById(P_ID.V_OUT_5_DEF) != 0);
-//        checkBox_GPO6.setSelected(defaultParameters.getValById(P_ID.V_OUT_6_DEF) != 0);
-//
-//        textField_chargeCycles.setText(defaultParameters.getStringValById(P_ID.CHARGE_CYCLES));
-    }
 
     public static void main(String[] args) throws ParserConfigurationException {
         
