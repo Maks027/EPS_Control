@@ -1,39 +1,41 @@
 import javax.swing.*;
+import java.awt.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-enum TimeMultipliers{
-    X1,
-    X10,
-    X100,
-    X1000,
-    X2000,
-    X5000,
-    X10000
+enum SolarState{
+    SHADOWED,
+    SUNNY
 }
 
 public class TimeSim {
     mainForm mf;
+
+    SolarState currentSolarState = SolarState.SUNNY;
 
     private JPanel mainTimePanel;
     private JTabbedPane tabbedPane1;
     private JPanel statePanel;
     private JPanel timeStatePanel;
     private JPanel paramPreviewPanel;
-    private JTextField textField_startTimeDate;
     private JTextField textField_currentTimeDate;
-    private JTextField textField_elapsedTimeDate;
     private JPanel timeContrPanel;
     private JButton button_fastBackward;
     private JButton button_StartPause;
     private JButton button_fastForward;
-    private JTextField textField_startTimeHour;
     private JTextField textField_currentTimeHour;
-    private JTextField textField_elapsedTimeHour;
-    private JButton button4;
     private JButton button_stopTimer;
     private JLabel multiplierLabel;
+    private JTextField textBox_orbPeriod;
+    private JTextField textBox_orbVelocity;
+    private JTextField textBox_orbHeight;
+    private JTextField textBox_orbShadow;
+    private JLabel stateLabel;
+    private JTextField textField_revolutions;
 
     private Timer timer;
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");;
@@ -44,27 +46,103 @@ public class TimeSim {
     private long timerCnt = 0;
     private int cntMult = 1;
     private int pressCnt = 0;
+    private long revolutionsCnt = 0;
     private int timerState = 0;
 
-    TimeMultipliers currentMultiplier = TimeMultipliers.X1;
+    private final BigInteger R = new BigInteger("6371000"); //Earth radius
+    private final BigDecimal G = new BigDecimal("0.0000000000667259"); // Gravitational constant
+    private final BigInteger M = new BigInteger("5973600000000000000000000"); //Earth mass
+    private final BigInteger GM = new BigInteger("398600000000000"); // G*M
+
+    private final long earthRadius = 6371000;
+    private long orbitHeight;
+    private double orbitVelocity;
+    private long orbitPeriod;
+    private long orbitRadius;
+    private double shadowPercent;
+    private long angle;
 
     public TimeSim() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        currentTimerCnt =  localDateTime.toEpochSecond(ZoneOffset.UTC);
+//        currentTimerCnt =  localDateTime.toEpochSecond(ZoneOffset.UTC);
 
         timer = new Timer(1000, event -> timerAction());
         cntMult = 1;
         timer.setInitialDelay(100);
 
+        textBox_orbHeight.setText("200");
+        calcOrbHeight();
+
         button_fastBackward.addActionListener(e -> FastBackwardAction());
         button_fastForward.addActionListener(e -> FastForwardAction());
         button_StartPause.addActionListener(e -> StartPauseAction());
         button_stopTimer.addActionListener(e -> StopAction());
+
+
+        textBox_orbPeriod.addActionListener(e -> calcOrbPeriod());
+        textBox_orbVelocity.addActionListener(e -> calcOrbVelocity());
+        textBox_orbHeight.addActionListener(e -> calcOrbHeight());
+    }
+
+    public void calcOrbHeight(){
+        orbitHeight = Long.valueOf(textBox_orbHeight.getText()) * 1000; //meters
+        orbitRadius = orbitHeight + earthRadius;
+
+        orbitVelocity = GM.divide(BigInteger.valueOf(orbitRadius)).sqrt().doubleValue(); //V = sqrt(G * M / R) (m/s)
+        textBox_orbVelocity.setText(String.valueOf(orbitVelocity / 1000)); //km/s
+
+        orbitPeriod = (long)(2 * Math.PI * (R.doubleValue() + orbitHeight) / orbitVelocity); // T = 2 * pi() * Rorb / V
+        textBox_orbPeriod.setText((String.valueOf(orbitPeriod / 60))); //min
+
+        calcShadowPercent();
+
+    }
+    public void calcOrbPeriod(){
+
+        orbitPeriod = (long)(Double.valueOf(textBox_orbPeriod.getText()) * 60); //seconds
+
+        orbitRadius = new CubicRoot().root(3, new BigDecimal(GM.multiply(BigInteger.valueOf(orbitPeriod * orbitPeriod)))
+                .divide(BigDecimal.valueOf(39.4784), 2, RoundingMode.HALF_DOWN)).longValue();
+        // R = (T^2 * G * M / 4 * pi()^2)^(1 / 3)
+
+        orbitHeight = orbitRadius - earthRadius;
+
+        textBox_orbHeight.setText(String.valueOf(orbitHeight / 1000));
+
+        orbitVelocity = GM.divide(R.add(BigInteger.valueOf(orbitHeight))).sqrt().doubleValue();
+        // V = sqrt(G * M / R)
+
+        textBox_orbVelocity.setText(String.valueOf(orbitVelocity / 1000));
+
+        calcShadowPercent();
+
+    }
+    public  void calcOrbVelocity(){
+
+        orbitVelocity = Double.valueOf(textBox_orbVelocity.getText()) * 1000;
+
+        orbitRadius = GM.divide(BigInteger.valueOf((long)(orbitVelocity * orbitVelocity))).longValue();
+        // Rorb = (G * M) / (V^2)
+        orbitHeight = orbitRadius - earthRadius;
+        // Horb = Rorb - Rearth
+        textBox_orbHeight.setText(String.valueOf(orbitHeight / 1000));
+
+        orbitPeriod = (long)(6.28 * orbitRadius / orbitVelocity);
+        // T = 2 * pi() * R / V
+        textBox_orbPeriod.setText(String.valueOf(orbitPeriod / 60));
+
+        calcShadowPercent();
+    }
+
+    private void calcShadowPercent(){
+        angle = 2 * (long) Math.toDegrees(Math.asin((double) earthRadius / orbitRadius));
+        shadowPercent = (double) angle / 360;
+        textBox_orbShadow.setText(String.valueOf((long)(shadowPercent * 100)));
     }
 
     public void FastForwardAction() {
-        if (++pressCnt >= 6)
-            pressCnt = 6;
+        if (++pressCnt >= 7)
+            pressCnt = 7;
 
         SetMultiplier(pressCnt);
     }
@@ -84,7 +162,11 @@ public class TimeSim {
     }
     public void StopAction() {
         timer.stop();
-        timer.restart();
+        revolutionsCnt = 0;
+        currentTimerCnt = 0;
+        timerState = 0;
+        textField_revolutions.setText(String.valueOf(revolutionsCnt));
+        displayMsAsTime(currentTimerCnt);
     }
 
     public void SetMultiplier(int multiplier) {
@@ -126,17 +208,39 @@ public class TimeSim {
                 cntMult = 100;
                 multiplierLabel.setText("X10000");
                 break;
+            case 7:
+                timer.setDelay(10);
+                cntMult = 1000;
+                multiplierLabel.setText("X100000");
+                break;
         }
     }
 
     public void timerAction(){
         currentTimerCnt += cntMult;
-        timerCnt += cntMult;
-        LocalDateTime d = LocalDateTime.ofEpochSecond(currentTimerCnt, 0, ZoneOffset.UTC);
-        textField_currentTimeDate.setText(dateFormatter.format(d));
-        textField_currentTimeHour.setText(timeFormatter.format(d));
-        LocalDateTime eTime = LocalDateTime.ofEpochSecond(timerCnt, 0, ZoneOffset.UTC);
+        displayMsAsTime(currentTimerCnt);
 
+        if ((currentTimerCnt % orbitPeriod) <= (orbitPeriod * (1 - shadowPercent))){
+            if (currentSolarState == SolarState.SHADOWED){
+                currentSolarState = SolarState.SUNNY;
+                revolutionsCnt++;
+                textField_revolutions.setText(String.valueOf(revolutionsCnt));
+                stateLabel.setForeground(Color.YELLOW);
+                stateLabel.setText("Sunny");
+            }
+        } else {
+            if (currentSolarState == SolarState.SUNNY){
+                currentSolarState = SolarState.SHADOWED;
+                stateLabel.setForeground(Color.BLACK);
+                stateLabel.setText("Shadow");
+            }
+        }
+    }
+
+    public void displayMsAsTime(long ms){
+        LocalDateTime time = LocalDateTime.ofEpochSecond(ms, 0, ZoneOffset.UTC);
+        textField_currentTimeDate.setText(String.valueOf(time.getDayOfYear() - 1));
+        textField_currentTimeHour.setText(timeFormatter.format(time));
     }
 
     public JPanel getMainTimePanel() {
@@ -156,4 +260,5 @@ public class TimeSim {
 
         jFrame.setVisible(true);
     }
+
 }
