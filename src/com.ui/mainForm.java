@@ -1,5 +1,6 @@
 import com.fazecast.jSerialComm.SerialPort;
 
+
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
@@ -17,7 +18,7 @@ public class mainForm {
     DefaultParameters defaultParameters;
     Map<P_ID, Parameter> parameterMap;
 
-    Map<Parameter, JTextField> fieldMap;
+    public Map<Parameter, JTextField> fieldMap;
     Map<Parameter, JCheckBox> checkBoxMap;
 
     Storage storage;
@@ -108,6 +109,16 @@ public class mainForm {
             }
         });
 
+        newWindow.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("D/N");
+                frame.setSize(600, 400);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setContentPane(new TimeSim().getMainTimePanel());
+                frame.setVisible(true);
+            }
+        });
     }
 
     public void fillMaps(){
