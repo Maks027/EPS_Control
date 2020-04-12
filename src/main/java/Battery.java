@@ -9,8 +9,12 @@ public class Battery {
 
     private double batteryCapacity;
 
-    public Battery(double batteryCapacity) {
+    private double stateOfCharge;
+
+
+    public Battery(double batteryCapacity, double stateOfCharge) {
         this.batteryCapacity = batteryCapacity;
+        this.stateOfCharge = stateOfCharge;
         loadDataFromFile(new File("src/main/resources/battery/charge_to_voltage.txt"), chargeToVoltage);
 //        loadDataFromFile(new File("src/main/resources/battery/charge_to_voltage.txt"), chargeCurve);
     }
@@ -35,28 +39,32 @@ public class Battery {
         }
     }
 
-    public double BatteryCharge(long time, double current){ //time in seconds, current in milliamps
-        double capacity = (double) time / 3600 * current; //mAh;
-        return capacity;
+    public void BatteryCharge(long timeIncrement, double current){ //time in seconds, current in milliamps
+        if (stateOfCharge < batteryCapacity)
+            stateOfCharge += (double) timeIncrement / 3600 * current; //mAh;
+        else
+            stateOfCharge = batteryCapacity;
     }
 
-    public double BatteryDischarge(long time, double current){
-        double capacity = batteryCapacity - ((double) time / 3600 * current);
-        return capacity;
+    public void BatteryDischarge(long timeIncrement, double current){
+        if (stateOfCharge > 0)
+            stateOfCharge -= (double) timeIncrement / 3600 * current; //mAh;
+        else
+            stateOfCharge = 0;
     }
 
-    public double getBatteryVoltage(double capacity){
+    public double getBatteryVoltage(){
         double voltage = 0;
-        if (capacity < this.batteryCapacity){
+//        if (stateOfCharge < this.batteryCapacity){
             for (Map.Entry<Double, Double> e : chargeToVoltage.entrySet()){
-                if (e.getKey() <= capacity){
+                if (e.getKey() <= stateOfCharge){
                     voltage = e.getValue();
                     break;
                 }
             }
-        }else{
-            voltage = chargeToVoltage.get(batteryCapacity);
-        }
+//        }else{
+//            voltage = chargeToVoltage.get(batteryCapacity);
+//        }
         return voltage;
     }
 
@@ -67,15 +75,26 @@ public class Battery {
 
     public void setBatteryCapacity(double batteryCapacity) {
         this.batteryCapacity = batteryCapacity;
+        loadDataFromFile(new File("src/main/resources/battery/charge_to_voltage.txt"), chargeToVoltage);
+        //chargeToVoltage.forEach((k, v) -> System.out.println(k + "  " + v));
     }
 
+    public double getStateOfCharge() {
+        return stateOfCharge;
+    }
+
+    public void setStateOfCharge(double stateOfCharge) {
+        this.stateOfCharge = stateOfCharge;
+    }
+
+
     public static void main(String[] args) {
-        Battery bat = new Battery(2800);
-
-        bat.chargeToVoltage.forEach((k, v) -> System.out.println(k + "  " + v));
-
-
-        System.out.println(bat.getBatteryVoltage(500));
+//        Battery bat = new Battery(2800);
+//
+//        bat.chargeToVoltage.forEach((k, v) -> System.out.println(k + "  " + v));
+//
+//
+//        System.out.println(bat.getBatteryVoltage(500));
 
 
     }

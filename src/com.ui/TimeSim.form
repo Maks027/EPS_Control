@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="mainTimePanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="649" height="400"/>
+      <xy x="20" y="20" width="660" height="400"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -244,7 +244,7 @@
                   </component>
                 </children>
               </grid>
-              <grid id="aca46" binding="statePanel" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="aca46" binding="statePanel" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="5" left="5" bottom="5" right="5"/>
                 <constraints>
                   <grid row="1" column="0" row-span="3" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
@@ -306,7 +306,9 @@
                         <maximum-size width="60" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <editable value="false"/>
+                    </properties>
                   </component>
                   <component id="3a088" class="javax.swing.JLabel">
                     <constraints>
@@ -332,6 +334,34 @@
                       <text value="V"/>
                     </properties>
                   </component>
+                  <component id="b9585" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="State of Charge"/>
+                    </properties>
+                  </component>
+                  <component id="37f71" class="javax.swing.JTextField" binding="textField_soc">
+                    <constraints>
+                      <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                        <minimum-size width="60" height="-1"/>
+                        <preferred-size width="60" height="-1"/>
+                        <maximum-size width="60" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <editable value="false"/>
+                    </properties>
+                  </component>
+                  <component id="dc434" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="mAh"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
               <grid id="84919" binding="paramPreviewPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -342,11 +372,16 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="5de20" class="javax.swing.JProgressBar" binding="progressBar1" default-binding="true">
+                  <component id="5de20" class="javax.swing.JProgressBar" binding="progressBar_soc">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <background color="-11382190"/>
+                      <borderPainted value="false"/>
+                      <foreground color="-9309696"/>
+                      <indeterminate value="false"/>
+                    </properties>
                   </component>
                   <vspacer id="7b16c">
                     <constraints>

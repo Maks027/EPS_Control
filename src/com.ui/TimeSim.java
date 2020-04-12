@@ -42,10 +42,11 @@ public class TimeSim {
     private JTextField textField_batCapacity;
     private JTextField textField_currentConsumption;
     private JTextField textField_batVoltage;
-    private JProgressBar progressBar1;
+    private JProgressBar progressBar_soc;
     private JButton chargeButton;
     private JButton dischargeButton;
     private JLabel batStateLabel;
+    private JTextField textField_soc;
 
     private Timer timer;
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");;
@@ -84,7 +85,10 @@ public class TimeSim {
 
     public TimeSim() {
 
-        battery = new Battery(2800);
+        battery = new Battery(2800, 1000);
+
+        progressBar_soc.setMinimum(0);
+        progressBar_soc.setMaximum((int)battery.getBatteryCapacity());
 
         timer = new Timer(1000, event -> timerAction());
         cntMult = 1;
@@ -104,7 +108,13 @@ public class TimeSim {
         textBox_orbPeriod.addActionListener(e -> calcOrbPeriod());
         textBox_orbVelocity.addActionListener(e -> calcOrbVelocity());
         textBox_orbHeight.addActionListener(e -> calcOrbHeight());
-        textField_batCapacity.addActionListener(e -> battery.setBatteryCapacity(Double.valueOf(textField_batCapacity.getText())));
+
+        textField_batCapacity.addActionListener(e -> {
+            battery.setBatteryCapacity(Double.valueOf(textField_batCapacity.getText()));
+            System.out.println(battery.getBatteryCapacity());
+            progressBar_soc.setMaximum((int)battery.getBatteryCapacity());
+        });
+
         chargeButton.addActionListener(e -> {
             chargeState = ChargeState.CHARGING;
             batStateLabel.setForeground(Color.GREEN);
@@ -248,7 +258,6 @@ public class TimeSim {
 
     public void timerAction(){
         currentTimerCnt += cntMult;
-        batCnt += cntMult;
         displayMsAsTime(currentTimerCnt);
 
         if ((currentTimerCnt % orbitPeriod) <= (orbitPeriod * (1 - shadowPercent))){
@@ -268,17 +277,26 @@ public class TimeSim {
         }
 
         if (chargeState == ChargeState.CHARGING){
-            batteryCapacity = battery.BatteryCharge(batCnt, Double.valueOf(textField_currentConsumption.getText()));
+            battery.BatteryCharge(cntMult, Double.valueOf(textField_currentConsumption.getText()));
         } else if (chargeState == ChargeState.DISCHARGING){
-            batteryCapacity = battery.BatteryDischarge(batCnt, Double.valueOf(textField_currentConsumption.getText()));
+            battery.BatteryDischarge(cntMult, Double.valueOf(textField_currentConsumption.getText()));
         }
-        if (chargeState != lastChargeState){
-            batCnt = 0;
-        }
-        lastChargeState = chargeState;
 
-        textField_batVoltage.setText(String.valueOf(battery.getBatteryVoltage(batteryCapacity)));
+        textField_batVoltage.setText(String.valueOf(battery.getBatteryVoltage()));
 
+        long SOC = (long)(battery.getStateOfCharge());
+        textField_soc.setText(String.valueOf(SOC));
+
+
+
+//        progressBar_soc.setValue((int) map(SOC, 0 , (long)battery.getBatteryCapacity(), 0, progressBar_soc.getMaximum()));
+
+        progressBar_soc.setValue((int)SOC);
+
+    }
+
+    long map(long x, long in_min, long in_max, long out_min, long out_max) {
+        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
     public void displayMsAsTime(long ms){
