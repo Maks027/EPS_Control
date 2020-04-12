@@ -1,11 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.EnumSet;
 
 enum SolarState{
     SHADOWED,
@@ -36,14 +39,22 @@ public class TimeSim {
     private JTextField textBox_orbShadow;
     private JLabel stateLabel;
     private JTextField textField_revolutions;
+    private JTextField textField_batCapacity;
+    private JTextField textField_currentConsumption;
+    private JTextField textField_batVoltage;
+    private JProgressBar progressBar1;
+    private JButton chargeButton;
+    private JButton dischargeButton;
+    private JLabel batStateLabel;
 
     private Timer timer;
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");;
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     DateTimeFormatter elapsedTimeFormatter;
+    Battery battery;
 
     private long currentTimerCnt = 0;
-    private long timerCnt = 0;
+    private long batCnt = 0;
     private int cntMult = 1;
     private int pressCnt = 0;
     private long revolutionsCnt = 0;
@@ -62,15 +73,26 @@ public class TimeSim {
     private double shadowPercent;
     private long angle;
 
+    enum ChargeState {
+        CHARGING,
+        DISCHARGING
+    }
+
+    ChargeState chargeState = ChargeState.CHARGING;
+    ChargeState lastChargeState = ChargeState.DISCHARGING;
+    double batteryCapacity;
+
     public TimeSim() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-//        currentTimerCnt =  localDateTime.toEpochSecond(ZoneOffset.UTC);
+
+        battery = new Battery(2800);
 
         timer = new Timer(1000, event -> timerAction());
         cntMult = 1;
         timer.setInitialDelay(100);
 
         textBox_orbHeight.setText("200");
+        textField_currentConsumption.setText("500");
+        textField_batCapacity.setText(String.valueOf(battery.getBatteryCapacity()));
         calcOrbHeight();
 
         button_fastBackward.addActionListener(e -> FastBackwardAction());
@@ -82,6 +104,17 @@ public class TimeSim {
         textBox_orbPeriod.addActionListener(e -> calcOrbPeriod());
         textBox_orbVelocity.addActionListener(e -> calcOrbVelocity());
         textBox_orbHeight.addActionListener(e -> calcOrbHeight());
+        textField_batCapacity.addActionListener(e -> battery.setBatteryCapacity(Double.valueOf(textField_batCapacity.getText())));
+        chargeButton.addActionListener(e -> {
+            chargeState = ChargeState.CHARGING;
+            batStateLabel.setForeground(Color.GREEN);
+            batStateLabel.setText("CHARGING");
+        });
+        dischargeButton.addActionListener(e -> {
+            chargeState = ChargeState.DISCHARGING;
+            batStateLabel.setForeground(Color.RED);
+            batStateLabel.setText("DISCHARGING");
+        });
     }
 
     public void calcOrbHeight(){
@@ -133,13 +166,11 @@ public class TimeSim {
 
         calcShadowPercent();
     }
-
     private void calcShadowPercent(){
         angle = 2 * (long) Math.toDegrees(Math.asin((double) earthRadius / orbitRadius));
         shadowPercent = (double) angle / 360;
         textBox_orbShadow.setText(String.valueOf((long)(shadowPercent * 100)));
     }
-
     public void FastForwardAction() {
         if (++pressCnt >= 7)
             pressCnt = 7;
@@ -168,7 +199,6 @@ public class TimeSim {
         textField_revolutions.setText(String.valueOf(revolutionsCnt));
         displayMsAsTime(currentTimerCnt);
     }
-
     public void SetMultiplier(int multiplier) {
         switch (multiplier){
             case 0:
@@ -218,6 +248,7 @@ public class TimeSim {
 
     public void timerAction(){
         currentTimerCnt += cntMult;
+        batCnt += cntMult;
         displayMsAsTime(currentTimerCnt);
 
         if ((currentTimerCnt % orbitPeriod) <= (orbitPeriod * (1 - shadowPercent))){
@@ -235,6 +266,19 @@ public class TimeSim {
                 stateLabel.setText("Shadow");
             }
         }
+
+        if (chargeState == ChargeState.CHARGING){
+            batteryCapacity = battery.BatteryCharge(batCnt, Double.valueOf(textField_currentConsumption.getText()));
+        } else if (chargeState == ChargeState.DISCHARGING){
+            batteryCapacity = battery.BatteryDischarge(batCnt, Double.valueOf(textField_currentConsumption.getText()));
+        }
+        if (chargeState != lastChargeState){
+            batCnt = 0;
+        }
+        lastChargeState = chargeState;
+
+        textField_batVoltage.setText(String.valueOf(battery.getBatteryVoltage(batteryCapacity)));
+
     }
 
     public void displayMsAsTime(long ms){
