@@ -3,14 +3,12 @@ import java.io.FileNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Battery {
     LinkedHashMap<Double, Double> chargeToVoltage = new LinkedHashMap<>();
-
     private double batteryCapacity;
-
     private double stateOfCharge;
-
 
     public Battery(double batteryCapacity, double stateOfCharge) {
         this.batteryCapacity = batteryCapacity;
@@ -58,6 +56,7 @@ public class Battery {
 //        if (stateOfCharge < this.batteryCapacity){
             for (Map.Entry<Double, Double> e : chargeToVoltage.entrySet()){
                 if (e.getKey() <= stateOfCharge){
+
                     voltage = e.getValue();
                     break;
                 }
@@ -68,13 +67,13 @@ public class Battery {
         return voltage;
     }
 
-
     public double getBatteryCapacity() {
         return batteryCapacity;
     }
 
     public void setBatteryCapacity(double batteryCapacity) {
         this.batteryCapacity = batteryCapacity;
+        chargeToVoltage.clear();
         loadDataFromFile(new File("src/main/resources/battery/charge_to_voltage.txt"), chargeToVoltage);
         //chargeToVoltage.forEach((k, v) -> System.out.println(k + "  " + v));
     }

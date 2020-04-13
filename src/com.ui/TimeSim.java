@@ -284,6 +284,7 @@ public class TimeSim {
 
         textField_batVoltage.setText(String.valueOf(battery.getBatteryVoltage()));
 
+
         long SOC = (long)(battery.getStateOfCharge());
         textField_soc.setText(String.valueOf(SOC));
 
