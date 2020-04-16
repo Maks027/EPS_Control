@@ -1,14 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.EnumSet;
 
 enum SolarState{
     SHADOWED,
@@ -22,11 +19,7 @@ public class TimeSim {
 
     private JPanel mainTimePanel;
     private JTabbedPane tabbedPane1;
-    private JPanel statePanel;
-    private JPanel timeStatePanel;
-    private JPanel paramPreviewPanel;
     private JTextField textField_currentTimeDate;
-    private JPanel timeContrPanel;
     private JButton button_fastBackward;
     private JButton button_StartPause;
     private JButton button_fastForward;
@@ -47,6 +40,22 @@ public class TimeSim {
     private JButton dischargeButton;
     private JLabel batStateLabel;
     private JTextField textField_soc;
+    private JPanel statePanel;
+    private JPanel timeContrPanel;
+    private JTextField textField_5VConsPower;
+    private JTextField textField_3V3ConsPower;
+    private JTextField textField_5VConsCurrent;
+    private JTextField textField_3V3ConsCurrent;
+    private JTextField textField_GenVoltage;
+    private JTextField textField_GenCurrent;
+    private JTextField textField_GenPower;
+    private JTextField textField_BCREff;
+    private JTextField textField_5VEff;
+    private JTextField textField_3V3Eff;
+    private JTextField textField_RAWConsPower;
+    private JTextField textField_RAWConsCurrent;
+    private JTextField textField_TotalConsPower;
+    private JTextField textField_TotalConsCurrent;
 
     private Timer timer;
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");;
@@ -74,6 +83,7 @@ public class TimeSim {
     private double shadowPercent;
     private long angle;
 
+
     enum ChargeState {
         CHARGING,
         DISCHARGING
@@ -81,23 +91,35 @@ public class TimeSim {
 
     ChargeState chargeState = ChargeState.CHARGING;
     ChargeState lastChargeState = ChargeState.DISCHARGING;
+
+    double generatedVoltage;
+    double totalGeneratedPower;
+    double totalGeneratedCurrent;
+
+    double batteryCurrent;
+
+    double totalRequiredPower;
+    double totalConsumedCurrent;
+    double consumedPower5V;
+    double consumedPower3V3;
+    double consumedCurrent5V;
+    double consumedCurrent3V3;
+    double efficiency5V;
+    double efficiency3V3;
+    double consumedPowerRAW;
+    double consumedCurrentRAW;
+
     double batteryCapacity;
 
     public TimeSim() {
 
         battery = new Battery(2800, 1000);
 
-        progressBar_soc.setMinimum(0);
-        progressBar_soc.setMaximum((int)battery.getBatteryCapacity());
+        initParameters();
 
         timer = new Timer(1000, event -> timerAction());
         cntMult = 1;
         timer.setInitialDelay(100);
-
-        textBox_orbHeight.setText("200");
-        textField_currentConsumption.setText("500");
-        textField_batCapacity.setText(String.valueOf(battery.getBatteryCapacity()));
-        calcOrbHeight();
 
         button_fastBackward.addActionListener(e -> FastBackwardAction());
         button_fastForward.addActionListener(e -> FastForwardAction());
@@ -115,16 +137,102 @@ public class TimeSim {
             progressBar_soc.setMaximum((int)battery.getBatteryCapacity());
         });
 
-        chargeButton.addActionListener(e -> {
-            chargeState = ChargeState.CHARGING;
-            batStateLabel.setForeground(Color.GREEN);
-            batStateLabel.setText("CHARGING");
+
+        textField_GenCurrent.addActionListener(e -> {
+            totalGeneratedCurrent = Double.valueOf(textField_GenCurrent.getText());
+            calcGenVoltAndPow();
         });
-        dischargeButton.addActionListener(e -> {
-            chargeState = ChargeState.DISCHARGING;
-            batStateLabel.setForeground(Color.RED);
-            batStateLabel.setText("DISCHARGING");
+
+
+        textField_5VConsPower.addActionListener(e -> {
+            consumedPower5V = Double.valueOf(textField_5VConsPower.getText());
+            consumedCurrent5V = consumedPower5V / 5;
+            textField_5VConsCurrent.setText(String.format("%.2f", consumedCurrent5V));
+            calcTotalPower();
         });
+        textField_5VConsCurrent.addActionListener(e -> {
+            consumedCurrent5V = Double.valueOf(textField_5VConsCurrent.getText());
+            consumedPower5V = consumedCurrent3V3 * 5;
+            textField_5VConsPower.setText(String.format("%.2f", consumedPower5V));
+            calcTotalPower();
+        });
+        textField_3V3ConsPower.addActionListener(e -> {
+            consumedPower3V3 = Double.valueOf(textField_3V3ConsPower.getText());
+            consumedCurrent3V3 = consumedPower3V3 / 3.3;
+            textField_3V3ConsCurrent.setText(String.format("%.2f", consumedCurrent3V3));
+            calcTotalPower();
+        });
+        textField_3V3ConsCurrent.addActionListener(e -> {
+            consumedCurrent3V3 = Double.valueOf(textField_3V3ConsCurrent.getText());
+            consumedPower3V3 = consumedCurrent3V3 * 3.3;
+            textField_3V3ConsPower.setText(String.format("%.2f", consumedPower3V3));
+            calcTotalPower();
+        });
+
+        textField_RAWConsPower.addActionListener(e -> {
+            consumedPowerRAW = Double.valueOf(textField_RAWConsPower.getText());
+            calcTotalPower();
+        });
+
+        textField_3V3Eff.addActionListener(e -> {
+            efficiency3V3 = Double.valueOf(textField_3V3Eff.getText());
+            textField_3V3Eff.setText(String.format("%.2f", efficiency3V3));
+        });
+        textField_5VEff.addActionListener(e -> {
+            efficiency5V = Double.valueOf(textField_5VEff.getText());
+            textField_5VEff.setText(String.format("%.2f", efficiency5V));
+        });
+    }
+
+    private void calcTotalPower(){
+        totalRequiredPower = consumedPower5V * 100 / efficiency5V + consumedPower3V3 * 100 / efficiency3V3 + consumedPowerRAW;
+        textField_TotalConsPower.setText(String.format("%.2f", totalRequiredPower));
+    }
+
+    private void calcGenVoltAndPow(){
+        generatedVoltage = this.battery.getBatteryVoltage();
+        totalGeneratedPower = generatedVoltage * totalGeneratedCurrent;
+
+        textField_GenPower.setText(String.format("%.2f",totalGeneratedPower));
+        textField_GenVoltage.setText(String.format("%.2f",generatedVoltage));
+    }
+
+    private void initParameters(){
+        progressBar_soc.setMinimum(0);
+        progressBar_soc.setMaximum((int)battery.getBatteryCapacity());
+
+        textBox_orbHeight.setText("200");
+        textField_currentConsumption.setText("500");
+        textField_batCapacity.setText(String.valueOf(battery.getBatteryCapacity()));
+        calcOrbHeight();
+
+        generatedVoltage = 5;
+        textField_GenVoltage.setText(String.valueOf(generatedVoltage));
+        totalGeneratedCurrent = 1;
+        textField_GenCurrent.setText(String.valueOf(totalGeneratedCurrent));
+        totalRequiredPower = 5;
+        textField_GenPower.setText(String.valueOf(totalRequiredPower));
+
+        consumedPower5V = 0;
+        consumedPower3V3 = 0.5;
+        consumedCurrent5V = consumedPower5V / 5;
+        consumedCurrent3V3 = consumedPower3V3 / 3.3;
+        consumedPowerRAW = 0.1;
+        totalGeneratedCurrent = 0.46;
+        efficiency3V3 = 76;
+        efficiency5V = 85;
+        calcTotalPower();
+        textField_5VConsPower.setText(String.format("%.2f",consumedPower5V));
+        textField_5VConsCurrent.setText(String.format("%.2f",consumedCurrent5V));
+        textField_3V3ConsPower.setText(String.format("%.2f",consumedPower3V3));
+        textField_3V3ConsCurrent.setText(String.format("%.2f",consumedCurrent3V3));
+        textField_RAWConsPower.setText(String.format("%.2f",consumedPowerRAW));
+        textField_3V3Eff.setText(String.format("%.2f", efficiency3V3));
+        textField_5VEff.setText(String.format("%.2f", efficiency5V));
+        textField_GenCurrent.setText(String.format("%.2f", totalGeneratedCurrent));
+        textField_TotalConsPower.setText(String.format("%.2f", totalRequiredPower));
+
+        stateLabel.setIcon(new ImageIcon("src/main/resources/icons/sun_on.png"));
     }
 
     public void calcOrbHeight(){
@@ -267,32 +375,61 @@ public class TimeSim {
                 textField_revolutions.setText(String.valueOf(revolutionsCnt));
                 stateLabel.setForeground(Color.YELLOW);
                 stateLabel.setText("Sunny");
+                stateLabel.setIcon(new ImageIcon("src/main/resources/icons/sun_on.png"));
+                chargeState = ChargeState.CHARGING;
+
             }
         } else {
             if (currentSolarState == SolarState.SUNNY){
                 currentSolarState = SolarState.SHADOWED;
                 stateLabel.setForeground(Color.BLACK);
                 stateLabel.setText("Shadow");
+                stateLabel.setIcon(new ImageIcon("src/main/resources/icons/sun_off.png"));
+                chargeState = ChargeState.DISCHARGING;
             }
         }
 
-        if (chargeState == ChargeState.CHARGING){
-            battery.BatteryCharge(cntMult, Double.valueOf(textField_currentConsumption.getText()));
-        } else if (chargeState == ChargeState.DISCHARGING){
-            battery.BatteryDischarge(cntMult, Double.valueOf(textField_currentConsumption.getText()));
-        }
+//        if (chargeState == ChargeState.CHARGING){
+//            battery.BatteryCharge(cntMult, Double.valueOf(textField_currentConsumption.getText()));
+//        } else if (chargeState == ChargeState.DISCHARGING){
+//            battery.BatteryDischarge(cntMult, Double.valueOf(textField_currentConsumption.getText()));
+//        }
+
+//        batteryCurrent = (totalGeneratedPower - totalConsumedPower) / battery.getBatteryVoltage() * 1000;
+
+        calcGenVoltAndPow();
+
+        batteryCurrent = (totalGeneratedPower - totalRequiredPower) / battery.getBatteryVoltage() * 1000;
+        batteryCurrent = battery.ModifySOC(cntMult, batteryCurrent);
+        textField_currentConsumption.setText(String.valueOf((long)batteryCurrent));
+
+//        double limitCurrent = battery.ModifySOC(cntMult, batteryCurrent);
+//        double excess = batteryCurrent - limitCurrent;
+
+
 
         textField_batVoltage.setText(String.valueOf(battery.getBatteryVoltage()));
-
 
         long SOC = (long)(battery.getStateOfCharge());
         textField_soc.setText(String.valueOf(SOC));
 
-
+        if ((SOC > 0) || (totalRequiredPower < totalGeneratedPower)){
+            totalConsumedCurrent =  totalRequiredPower / battery.getBatteryVoltage();
+        } else {
+            totalConsumedCurrent = totalGeneratedCurrent;
+        }
+        textField_TotalConsCurrent.setText(String.format("%.3f", totalConsumedCurrent));
 
 //        progressBar_soc.setValue((int) map(SOC, 0 , (long)battery.getBatteryCapacity(), 0, progressBar_soc.getMaximum()));
 
         progressBar_soc.setValue((int)SOC);
+
+        consumedCurrentRAW = consumedPowerRAW / battery.getBatteryVoltage();
+        textField_RAWConsCurrent.setText(String.format("%.3f", consumedCurrentRAW));
+
+//        totalConsumedCurrent = totalConsumedPower / battery.getBatteryVoltage() + excess;
+//        textField_TotalConsCurrent.setText(String.format("%.3f", totalConsumedCurrent));
+
 
     }
 
@@ -317,7 +454,7 @@ public class TimeSim {
     public static void main(String[] args) {
 
         JFrame jFrame = new JFrame("D/N");
-        jFrame.setSize(800, 400);
+        jFrame.setMinimumSize(new Dimension(1000, 300));
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.setContentPane(new TimeSim().getMainTimePanel());
 

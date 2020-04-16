@@ -51,6 +51,30 @@ public class Battery {
             stateOfCharge = 0;
     }
 
+    public double ModifySOC(long timeIncrement, double current){
+        if ((stateOfCharge >= (0.8 * batteryCapacity) && (current > 0))){
+            double k = Math.log(batteryCapacity - stateOfCharge) / Math.log(batteryCapacity - 0.8 * batteryCapacity);
+            if (k <= 0)
+                k = 0;
+            current = current * k;
+        }
+
+        if ((current < 0) && (stateOfCharge <= 0)){ //If the battery is discharging
+            current = 0;
+        }
+
+        if (stateOfCharge < batteryCapacity)
+            if (stateOfCharge >= 0)
+                stateOfCharge += (double) timeIncrement / 3600 * current; //mAh;
+            else {
+                stateOfCharge = 0;
+            }
+        else
+            stateOfCharge = batteryCapacity;
+
+        return  current;
+    }
+
     public double getBatteryVoltage(){
         double voltage = 0;
 //        if (stateOfCharge < this.batteryCapacity){
