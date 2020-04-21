@@ -492,7 +492,7 @@
                         </constraints>
                         <properties>
                           <foreground color="-3421237"/>
-                          <text value="Consumed Power"/>
+                          <text value="Required Power"/>
                         </properties>
                       </component>
                       <component id="cf644" class="javax.swing.JTextField" binding="textField_5VConsPower">
@@ -522,7 +522,7 @@
                         </constraints>
                         <properties>
                           <foreground color="-3421237"/>
-                          <text value="Consumed Current"/>
+                          <text value="Required Current"/>
                         </properties>
                       </component>
                       <component id="93566" class="javax.swing.JTextField" binding="textField_5VConsCurrent">
@@ -731,7 +731,7 @@
                           </grid>
                         </constraints>
                         <properties>
-                          <editable value="true"/>
+                          <editable value="false"/>
                           <horizontalAlignment value="11"/>
                         </properties>
                       </component>
