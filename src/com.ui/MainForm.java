@@ -1,10 +1,12 @@
 import com.fazecast.jSerialComm.SerialPort;
+import org.w3c.dom.Document;
 
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,7 @@ import java.util.Map;
 import static java.lang.Integer.parseInt;
 
 
-public class mainForm {
+public class MainForm {
 
     List<Parameter> list;
     DefaultParameters defaultParameters;
@@ -53,7 +55,7 @@ public class mainForm {
     MessageSend messageSend;
     SerialPort port;
 
-    public mainForm() throws ParserConfigurationException {
+    public MainForm() {
         storage = new Storage();
         defaultParameters = new DefaultParameters();
 
@@ -64,6 +66,24 @@ public class mainForm {
 
         fillMaps();
         addAllListeners();
+
+        File file = new File("F:\\parameters.xml");
+
+        Document doc = storage.createDocument();
+
+        storage.ParseFile(file, parameterMap);
+
+        int PowerOnCount = (int)parameterMap.get(P_ID.POWER_ON_CYCLES).getDoubleValue();
+
+        parameterMap.get(P_ID.POWER_ON_CYCLES).setDoubleValue(++PowerOnCount);
+
+        System.out.println(parameterMap.get(P_ID.POWER_ON_CYCLES).getDoubleValue());
+
+        storage.mapToFile(parameterMap, file);
+
+        textField_onCycles.setText(String.valueOf(PowerOnCount));
+
+ //       System.out.println("vbat " + parameterMap.get(P_ID.BATTERY_VOLTAGE).getDoubleValue());
 
         ScanButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -219,7 +239,7 @@ public class mainForm {
         JFrame frame = new JFrame("EPS Simulator");
         frame.setSize(1200, 700);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setContentPane(new mainForm().panel1);
+        frame.setContentPane(new MainForm().panel1);
         frame.setVisible(true);
     }
 

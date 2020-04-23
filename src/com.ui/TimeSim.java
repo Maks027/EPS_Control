@@ -1,3 +1,5 @@
+import org.w3c.dom.Document;
+
 import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
@@ -87,6 +89,9 @@ public class TimeSim {
     double tempTotalGeneratedCurrent;
     BusState busStateBCR = BusState.ON;
 
+    Storage storage;
+    Document document;
+
     double batteryCurrent;
 
     double totalRequiredPower;
@@ -155,6 +160,12 @@ public class TimeSim {
         textField_5VEff.addActionListener(e -> bus5V.setEfficiency(Double.valueOf(textField_5VEff.getText())));
     }
     private void initParameters(){
+        storage = new Storage();
+        document = storage.createDocument();
+
+
+
+
         timer = new Timer(1000, event -> timerAction());
         cntMult = 1;
         timer.setInitialDelay(100);

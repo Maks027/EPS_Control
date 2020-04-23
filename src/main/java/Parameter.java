@@ -1,7 +1,7 @@
 public class Parameter {
     private int address;
     private int adcValue;
-    private double k = 0;
+    private double k = 1;
     private double doubleValue;
     P_ID id;
 
@@ -11,6 +11,7 @@ public class Parameter {
         this.address = address;
         this.doubleValue = value;
         this.id = id;
+        k = 1;
     }
 
     public Parameter(P_ID id, int address, double value, double ADCRef) {
@@ -33,8 +34,7 @@ public class Parameter {
 
     public void setDoubleValue(String stringValue) {
         this.doubleValue = Double.valueOf(stringValue);
-        if (this.k != 0)
-            reCalcAdcVal();
+        reCalcAdcVal();
     }
 
     public double getK() {
@@ -43,6 +43,7 @@ public class Parameter {
 
     public void setK(double k) {
         this.k = k;
+        reCalcAdcVal();
     }
 
     public int getAddress() {
