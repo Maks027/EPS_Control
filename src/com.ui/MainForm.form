@@ -209,7 +209,9 @@
                     <maximum-size width="100" height="-1"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                </properties>
               </component>
               <component id="a0e72" class="javax.swing.JLabel">
                 <constraints>
@@ -239,6 +241,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -850,11 +853,13 @@
               </component>
               <component id="b073a" class="javax.swing.JTextField" binding="textField_XVoltage">
                 <constraints>
-                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                    <minimum-size width="50" height="-1"/>
+                    <preferred-size width="50" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -866,7 +871,7 @@
               </component>
               <component id="41a7a" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false">
                     <minimum-size width="-1" height="10"/>
                     <preferred-size width="-1" height="10"/>
                     <maximum-size width="-1" height="10"/>
@@ -888,7 +893,7 @@
               </component>
               <component id="d45" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false">
                     <minimum-size width="-1" height="10"/>
                     <preferred-size width="-1" height="10"/>
                     <maximum-size width="-1" height="10"/>
@@ -901,17 +906,19 @@
               </component>
               <component id="880ca" class="javax.swing.JTextField" binding="textField_XCurrentPos">
                 <constraints>
-                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                    <minimum-size width="50" height="-1"/>
+                    <preferred-size width="50" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
               <component id="9335e" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                  <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false">
                     <minimum-size width="-1" height="10"/>
                     <preferred-size width="-1" height="10"/>
                     <maximum-size width="-1" height="10"/>
@@ -924,11 +931,13 @@
               </component>
               <component id="60cee" class="javax.swing.JTextField" binding="textField_XCurrentNeg">
                 <constraints>
-                  <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                  <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                    <minimum-size width="50" height="-1"/>
+                    <preferred-size width="50" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -958,7 +967,7 @@
               </component>
               <component id="27175" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                  <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false">
                     <minimum-size width="-1" height="10"/>
                     <preferred-size width="-1" height="10"/>
                     <maximum-size width="-1" height="10"/>
@@ -980,7 +989,7 @@
               </component>
               <component id="d78c8" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                  <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false">
                     <minimum-size width="-1" height="10"/>
                     <preferred-size width="-1" height="10"/>
                     <maximum-size width="-1" height="10"/>
@@ -993,17 +1002,19 @@
               </component>
               <component id="a04dc" class="javax.swing.JTextField" binding="textField_YCurrentPos">
                 <constraints>
-                  <grid row="13" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                  <grid row="13" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                    <minimum-size width="50" height="-1"/>
+                    <preferred-size width="50" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
               <component id="78034" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="14" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                  <grid row="14" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false">
                     <minimum-size width="-1" height="10"/>
                     <preferred-size width="-1" height="10"/>
                     <maximum-size width="-1" height="10"/>
@@ -1016,11 +1027,13 @@
               </component>
               <component id="711dd" class="javax.swing.JTextField" binding="textField_YCurrentNeg">
                 <constraints>
-                  <grid row="15" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                  <grid row="15" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                    <minimum-size width="50" height="-1"/>
+                    <preferred-size width="50" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1044,11 +1057,13 @@
               </component>
               <component id="d739e" class="javax.swing.JTextField" binding="textField_YVoltage">
                 <constraints>
-                  <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                  <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                    <minimum-size width="50" height="-1"/>
+                    <preferred-size width="50" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1060,7 +1075,7 @@
               </component>
               <component id="9ac65" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="17" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                  <grid row="17" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false">
                     <minimum-size width="-1" height="10"/>
                     <preferred-size width="-1" height="10"/>
                     <maximum-size width="-1" height="10"/>
@@ -1082,7 +1097,7 @@
               </component>
               <component id="a1ac9" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="19" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                  <grid row="19" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false">
                     <minimum-size width="-1" height="10"/>
                     <preferred-size width="-1" height="10"/>
                     <maximum-size width="-1" height="10"/>
@@ -1095,17 +1110,19 @@
               </component>
               <component id="2d0e5" class="javax.swing.JTextField" binding="textField_ZCurrentPos">
                 <constraints>
-                  <grid row="20" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                  <grid row="20" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                    <minimum-size width="50" height="-1"/>
+                    <preferred-size width="50" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
               <component id="29e" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="21" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                  <grid row="21" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false">
                     <minimum-size width="-1" height="10"/>
                     <preferred-size width="-1" height="10"/>
                     <maximum-size width="-1" height="10"/>
@@ -1118,11 +1135,13 @@
               </component>
               <component id="8d876" class="javax.swing.JTextField" binding="textField_ZCurrentNeg">
                 <constraints>
-                  <grid row="22" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                  <grid row="22" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                    <minimum-size width="50" height="-1"/>
+                    <preferred-size width="50" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1146,11 +1165,13 @@
               </component>
               <component id="6b0a2" class="javax.swing.JTextField" binding="textField_ZVoltage">
                 <constraints>
-                  <grid row="18" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                  <grid row="18" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                    <minimum-size width="50" height="-1"/>
+                    <preferred-size width="50" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1198,6 +1219,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1223,6 +1245,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1242,6 +1265,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1406,6 +1430,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1586,6 +1611,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1614,6 +1640,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1642,6 +1669,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1670,6 +1698,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -1707,6 +1736,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -2208,6 +2238,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -2227,6 +2258,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -2246,6 +2278,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <editable value="false"/>
                   <text value=""/>
                 </properties>
               </component>

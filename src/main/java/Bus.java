@@ -16,6 +16,7 @@ public class Bus {
         this.textFieldPower = textFieldPower;
         this.textFieldCurrent.setText(String.format(Locale.ROOT, "%.2f", this.requiredCurrent));
         this.textFieldPower.setText(String.format(Locale.ROOT, "%.2f", this.requiredPower));
+        this.busVoltage = busVoltage;
     }
     public Bus(){}
 
@@ -39,36 +40,23 @@ public class Bus {
     private double busVoltage;
 
 
-//    public void setRequiredPower(double consumedPower){
-//        this.consumedPower = consumedPower;
-//        this.textFieldPower.setText(String.format(Locale.ROOT, "%.2f", this.requiredPower));
-//        this.consumedCurrent = consumedPower / this.busVoltage;
-//        this.textFieldCurrent.setText(String.format(Locale.ROOT, "%.2f", this.requiredCurrent));
-//    }
-
     public void setRequiredPower(){
         this.requiredPower = this.consumedPower = Double.valueOf(textFieldPower.getText());
-        this.requiredCurrent = this.consumedCurrent = consumedPower / this.busVoltage;
+        this.requiredCurrent = this.consumedCurrent = this.requiredPower / this.busVoltage;
         this.textFieldCurrent.setText(String.format(Locale.ROOT, "%.2f", this.requiredCurrent));
     }
 
     public void setRequiredPower(double voltage){
         this.requiredPower = this.consumedPower = Double.valueOf(textFieldPower.getText());
-        this.requiredCurrent = this.consumedCurrent = consumedPower / voltage;
+        this.requiredCurrent = this.consumedCurrent = requiredPower / voltage;
         this.textFieldCurrent.setText(String.format(Locale.ROOT, "%.2f", this.requiredCurrent));
     }
 
     public void setRequiredCurrent(){
-        this.requiredCurrent = this.consumedCurrent = Double.valueOf(textFieldCurrent.getText());
+        this.requiredCurrent = Double.valueOf(textFieldCurrent.getText());
         this.requiredPower = this.requiredCurrent * this.busVoltage;
         this.textFieldPower.setText(String.format(Locale.ROOT, "%.2f", this.requiredPower));
     }
-//
-//    public void setRequiredCurrent(double voltage){
-//        this.requiredCurrent = this.consumedCurrent = Double.valueOf(textFieldCurrent.getText());
-//        this.requiredPower = this.requiredCurrent * voltage;
-//        this.textFieldPower.setText(String.format(Locale.ROOT, "%.2f", this.requiredPower));
-//    }
 
     public void turnON(){
         this.busState = TimeSim.BusState.ON;
@@ -89,7 +77,4 @@ public class Bus {
         this.textFieldCurrent.setBackground(Color.red);
 
     }
-
-
-
 }

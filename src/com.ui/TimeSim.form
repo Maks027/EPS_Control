@@ -384,7 +384,7 @@
                           </grid>
                         </constraints>
                         <properties>
-                          <editable value="true"/>
+                          <editable value="false"/>
                           <horizontalAlignment value="11"/>
                         </properties>
                       </component>
@@ -414,7 +414,8 @@
                           </grid>
                         </constraints>
                         <properties>
-                          <editable value="false"/>
+                          <editable value="true"/>
+                          <enabled value="true"/>
                           <horizontalAlignment value="11"/>
                         </properties>
                       </component>

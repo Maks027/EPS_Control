@@ -1,4 +1,5 @@
 import com.fazecast.jSerialComm.SerialPort;
+import lombok.Getter;
 import org.w3c.dom.Document;
 
 
@@ -9,6 +10,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static java.lang.Integer.parseInt;
@@ -16,14 +18,13 @@ import static java.lang.Integer.parseInt;
 
 public class MainForm {
 
-    List<Parameter> list;
-    DefaultParameters defaultParameters;
-    Map<P_ID, Parameter> parameterMap;
+    private DefaultParameters defaultParameters;
+    private Map<P_ID, Parameter> parameterMap;
 
-    public Map<Parameter, JTextField> fieldMap;
-    Map<Parameter, JCheckBox> checkBoxMap;
+    private Map<Parameter, JTextField> fieldMap;
+    private Map<Parameter, JCheckBox> checkBoxMap;
 
-    Storage storage;
+    private Storage storage;
 
 
     private JButton ScanButton, connectButton, closeButton;
@@ -54,8 +55,17 @@ public class MainForm {
 
     MessageSend messageSend;
     SerialPort port;
+    @Getter
+    private static Timer timer;
+    TimeSim timeSim;
 
     public MainForm() {
+        timeSim = new TimeSim();
+
+        timer = new Timer(300, e -> timerAction());
+        timer.setInitialDelay(100);
+  //      timer.start();
+
         storage = new Storage();
         defaultParameters = new DefaultParameters();
 
@@ -135,10 +145,38 @@ public class MainForm {
                 JFrame frame = new JFrame("D/N");
                 frame.setSize(600, 400);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setContentPane(new TimeSim().getMainTimePanel());
+                frame.setContentPane(timeSim.getMainTimePanel());
                 frame.setVisible(true);
             }
         });
+    }
+
+    private void timerAction(){
+        timeSim.getValues(parameterMap);
+
+        updateField(P_ID.BATTERY_VOLTAGE);
+        updateField(P_ID.BATTERY_CURRENT);
+        updateField(P_ID.BCR_VOLTAGE);
+        updateField(P_ID.BCR_CURRENT);
+        updateField(P_ID.CURRENT_5V);
+        updateField(P_ID.CURRENT_3V3);
+
+        updateField(P_ID.X_VOLTAGE);
+        updateField(P_ID.X_POS_CURRENT);
+        updateField(P_ID.X_NEG_CURRENT);
+
+        updateField(P_ID.Y_VOLTAGE);
+        updateField(P_ID.Y_POS_CURRENT);
+        updateField(P_ID.Y_NEG_CURRENT);
+
+        updateField(P_ID.Z_VOLTAGE);
+        updateField(P_ID.Z_POS_CURRENT);
+        updateField(P_ID.Z_NEG_CURRENT);
+
+    }
+
+    public void updateField(P_ID pId){
+        fieldMap.get(parameterMap.get(pId)).setText(String.format(Locale.ROOT, "%.2f", parameterMap.get(pId).getDoubleValue()));
     }
 
     public void fillMaps(){
@@ -197,7 +235,6 @@ public class MainForm {
     public void addTextChangeListener(P_ID id){
         Parameter parameter = parameterMap.get(id);
         fieldMap.get(parameter).addActionListener(e -> textChangeAction(id));
-
     }
 
     public void addCheckBoxChangeListener(P_ID id){
@@ -241,6 +278,7 @@ public class MainForm {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(new MainForm().panel1);
         frame.setVisible(true);
+
     }
 
 
