@@ -2,6 +2,8 @@ import org.w3c.dom.Document;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -49,6 +51,15 @@ public class TimeSim {
     private JTextField textField_RAWConsCurrent;
     private JTextField textField_TotalConsPower;
     private JTextField textField_TotalConsCurrent;
+    private JCheckBox checkBox_heater1;
+    private JCheckBox checkBox_heater2;
+    private JCheckBox checkBox_heater3;
+    private JTextField textField_batteryMass;
+    private JTextField textField_batterySurface;
+    private JTextField textField_h;
+    private JTextField textField_Cp;
+    private JTextField textField_batTemp;
+    private JTextField textField_heatersPower;
 
     private long currentTimerCnt = 0;
     private int cntMult = 1;
@@ -66,6 +77,10 @@ public class TimeSim {
     public Panel panelX;
     public Panel panelY;
     public Panel panelZ;
+
+    public ThermalSim batteryTh;
+
+
 
 
     enum ChargeState {
@@ -165,8 +180,30 @@ public class TimeSim {
             setSolarPanelsPower();
         });
         textField_BCREff.addActionListener(e -> bcrEfficiency = Double.valueOf(textField_BCREff.getText()));
+
+        textField_batteryMass.addActionListener(e -> {
+            batteryTh.setM(Double.valueOf(textField_batteryMass.getText()));
+            updateThermalParameters();
+        });
+        textField_batterySurface.addActionListener(e -> {
+            batteryTh.setA(Double.valueOf(textField_batterySurface.getText()));
+            updateThermalParameters();
+        });
+
+        textField_h.addActionListener(e -> {
+            batteryTh.setH(Double.valueOf(textField_h.getText()));
+            updateThermalParameters();
+        });
+        textField_Cp.addActionListener(e -> {
+            batteryTh.setCp(Double.valueOf(textField_Cp.getText()));
+            updateThermalParameters();
+        });
     }
     private void initParameters(){
+
+        batteryTh = new ThermalSim(14, 0.004, 0.15, 4500);
+        batteryTh.setInitEnergy(0, 290);
+        updateThermalParameters();
 
         timer = new Timer(1000, event -> timerAction());
         cntMult = 1;
@@ -258,6 +295,13 @@ public class TimeSim {
         parameterMap.get(P_ID.Z_VOLTAGE).setDoubleValue(this.panelZ.getGeneratedVoltage());
         parameterMap.get(P_ID.Z_POS_CURRENT).setDoubleValue(this.panelZ.getGeneratedPositiveCurrent());
         parameterMap.get(P_ID.Z_NEG_CURRENT).setDoubleValue(this.panelZ.getGeneratedNegativeCurrent());
+    }
+
+    private void updateThermalParameters(){
+        textField_h.setText(String.format(Locale.ROOT, "%.2f", batteryTh.getH()));
+        textField_batterySurface.setText(String.format(Locale.ROOT, "%.4f", batteryTh.getA()));
+        textField_batteryMass.setText(String.format(Locale.ROOT, "%.2f", batteryTh.getM()));
+        textField_Cp.setText(String.format(Locale.ROOT, "%.2f", batteryTh.getCp()));
     }
 
     private void displayOrbitParameters(){
@@ -428,7 +472,7 @@ public class TimeSim {
         getTotalGeneratedPower();
         calcGeneratedCurrent();
 
-        batteryCurrent = (totalGeneratedPower - totalConsumedPower) / battery.getBatteryVoltage() * 1000;
+        batteryCurrent = (totalGeneratedPower - totalConsumedPower - battery.getTotalGeneratedHeat()) / battery.getBatteryVoltage() * 1000;
 
         batteryCurrent = battery.ModifySOC(cntMult, batteryCurrent);
         textField_currentConsumption.setText(String.valueOf((long)batteryCurrent));
@@ -455,6 +499,18 @@ public class TimeSim {
         calcTotalPower();
 
         progressBar_soc.setValue((int)SOC);
+
+        ///////////////////////////////////////
+        batteryTh.transferEnergy(cntMult, battery.getTotalGeneratedHeat());
+
+        textField_batTemp.setText(String.format(Locale.ROOT, "%.2f", batteryTh.getTempCelsius()));
+        battery.autoHeat(batteryTh.getTempCelsius());
+        checkBox_heater1.setSelected(battery.heater1.isOn());
+        checkBox_heater2.setSelected(battery.heater2.isOn());
+        checkBox_heater3.setSelected(battery.heater3.isOn());
+        textField_heatersPower.setText(String.format(Locale.ROOT, "%.2f", battery.getTotalGeneratedHeat()));
+
+        ///////////////////////////////////////
     }
 
     public void displayMsAsTime(long ms){

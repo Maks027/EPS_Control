@@ -1,3 +1,6 @@
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedHashMap;
@@ -7,7 +10,6 @@ import java.util.Scanner;
 
 class BatteryHeater{
     private double consumedCurrent;
-    private double generatedPower;
     private boolean onState;
 
     public BatteryHeater(double consumedCurrent, boolean onState) {
@@ -17,7 +19,7 @@ class BatteryHeater{
 
     public double getGeneratedPower(double voltage){
         if (onState){
-            return this.consumedCurrent * voltage;
+            return this.consumedCurrent * voltage / 1000;
         } else {
             return 0;
         }
@@ -38,6 +40,10 @@ class BatteryHeater{
         this.onState = false;
     }
 
+    public boolean isOn() {
+        return this.onState;
+    }
+
 }
 
 public class Battery {
@@ -45,12 +51,19 @@ public class Battery {
     private double batteryCapacity;
     private double stateOfCharge;
 
+    @Getter
+    private double batteryTemperature;
+    private double tempSens1;
+    private double tempSens2;
+    private double tempSens3;
+
+    private double totalGeneratedHeat;
     public BatteryHeater heater1;
     public BatteryHeater heater2;
     public BatteryHeater heater3;
 
 
-    public Battery(double batteryCapacity, double stateOfCharge, double internalResistance) {
+    public Battery(double batteryCapacity, double stateOfCharge) {
         this.batteryCapacity = batteryCapacity;
         this.stateOfCharge = stateOfCharge;
 
@@ -60,8 +73,47 @@ public class Battery {
         heater3 = new BatteryHeater(230, false);
     }
 
+    public void autoHeat(double temperature){
+        this.batteryTemperature = temperature;
+
+        if (this.stateOfCharge > 0) {
+            if (batteryTemperature <= 5) {
+                heater1.turnOn();
+                if (batteryTemperature <= 1){
+                    heater2.turnOn();
+                    if (batteryTemperature <= -2) {
+                        heater3.turnOn();
+                    } else if (batteryTemperature > 0){
+                        heater3.turnOff();
+                    }
+                } else if (batteryTemperature > 4) {
+                    heater2.turnOff();
+                    heater3.turnOff();
+                }
+            } else if (batteryTemperature > 8){
+                heater1.turnOff();
+                heater2.turnOff();
+                heater3.turnOff();
+            }
+        } else {
+            heater1.turnOff();
+            heater2.turnOff();
+            heater3.turnOff();
+        }
+    }
+
+    public void setBatteryTemperature(double temperature){
+        this.batteryTemperature = temperature;
+    }
+
+
     private double getHeatersCurrent(){
         return heater1.getConsumedCurrent() + heater2.getConsumedCurrent() + heater3.getConsumedCurrent();
+    }
+
+    public double getTotalGeneratedHeat() {
+        double voltage = this.getBatteryVoltage();
+        return heater1.getGeneratedPower(voltage) + heater2.getGeneratedPower(voltage) + heater3.getGeneratedPower(voltage);
     }
 
     public void loadDataFromFile(File file, LinkedHashMap<Double, Double> map){
@@ -99,9 +151,6 @@ public class Battery {
     }
 
     public double ModifySOC(long timeIncrement, double current){
-
-        current += getHeatersCurrent();
-
         if ((stateOfCharge >= (0.8 * batteryCapacity) && (current > 0))){
             double k = Math.log(batteryCapacity - stateOfCharge) / Math.log(batteryCapacity - 0.8 * batteryCapacity);
             if (k <= 0)

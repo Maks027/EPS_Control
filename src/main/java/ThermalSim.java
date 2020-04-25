@@ -4,11 +4,15 @@ import lombok.Setter;
 import java.util.Locale;
 
 public class ThermalSim {
-
+    @Getter @Setter
     private double h;       //Heat transfer coefficient [W/(m^2 * K)]
+    @Getter @Setter
     private double A;       //Area [m^2]
+    @Getter
     private double m;       //Mass [kg]
+    @Getter
     private double Cp;      //Specific heat capacity [J / (kg * K)]
+
     private double Cth;     //Thermal mass [J / K]
     @Getter @Setter
     private double T_amb;   //Ambient temperature
@@ -33,6 +37,16 @@ public class ThermalSim {
         System.out.println(Cth);
     }
 
+    public void setM(double m){
+        this.m = m;
+        this.Cth = this.m * this.Cp;
+    }
+
+    public void setCp(double Cp){
+        this.Cp = Cp;
+        this.Cth = this.m * this.Cp;
+    }
+
     private double calcEnergy(double tempDiff){
         return tempDiff * this.Cth;
     }
@@ -45,7 +59,7 @@ public class ThermalSim {
         return this.h * this.A * tempDiff;
     }
 
-    private double transferEnergy(long timeIncrement){
+    public double transferEnergy(long timeIncrement){
         this.P_tr = calcTransferredPower(calcTempDiff(this.T_amb, this.T));
 
         double Q_tr = P_tr * timeIncrement;
@@ -57,7 +71,7 @@ public class ThermalSim {
         return this.Q;
     }
 
-    private double transferEnergy(long timeIncrement, double addedPower){
+    public double transferEnergy(long timeIncrement, double addedPower){
         this.P_tr = calcTransferredPower(calcTempDiff(this.T_amb, this.T));
         this.P_tr += addedPower;
         double Q_tr = P_tr * timeIncrement;
@@ -75,8 +89,12 @@ public class ThermalSim {
         this.Q = calcEnergy(bodyTemp - ambientTemp);
     }
 
+    public double getTempCelsius() {
+        return this.T - 273;
+    }
+
     public static void main(String[] args) {
-        ThermalSim thermalSim = new ThermalSim(14, 0.004, 0.15, 45e00);
+        ThermalSim thermalSim = new ThermalSim(14, 0.004, 0.15, 4500);
 
          thermalSim.setInitEnergy(0, 290);
 
