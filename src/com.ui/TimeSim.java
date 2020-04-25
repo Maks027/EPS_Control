@@ -58,7 +58,7 @@ public class TimeSim {
 
     private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     private Timer timer;
-    private Battery battery;
+    public Battery battery;
     private Orbit orbit;
     private Bus bus5V;
     private Bus bus3V3;
