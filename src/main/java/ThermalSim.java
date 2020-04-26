@@ -26,6 +26,13 @@ public class ThermalSim {
     private double lastP_tr;  //Last value
 
     private double dT;        //Temperature difference
+    @Getter @Setter
+    private double exposedArea;
+    @Getter @Setter
+    private double radiationIntensity;
+    @Getter @Setter
+    private double receivedThermalPower;
+    private boolean isSunny;
 
     public ThermalSim(double h, double a, double m, double cp) {
         this.h = h;
@@ -35,6 +42,31 @@ public class ThermalSim {
 
         Cth = this.m * this.Cp;
         System.out.println(Cth);
+    }
+
+    public void initSunExposure(double radiationIntensity, double exposedArea, boolean isSunny) {
+        this.radiationIntensity = radiationIntensity;
+        this.exposedArea = exposedArea;
+        this.isSunny = isSunny;
+    }
+
+    public void startSunExposure(){
+        this.isSunny = true;
+    }
+    public void stopSunExposure(){
+        this.isSunny = false;
+    }
+
+    public boolean isExposed(){
+        return this.isSunny;
+    }
+
+    public double getThermalPower(){
+        if (isSunny){
+            return this.radiationIntensity * this.exposedArea;
+        } else {
+            return 0;
+        }
     }
 
     public void setM(double m){

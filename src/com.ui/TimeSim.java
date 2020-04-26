@@ -225,14 +225,13 @@ public class TimeSim {
             updateThermalParameters();
         });
         textField_solRad.addActionListener(e -> {
-
+            satelliteTh.setRadiationIntensity(Double.valueOf(textField_solRad.getText()));
+            updateThermalParameters();
         });
         textField_solArea.addActionListener(e -> {
-
+            satelliteTh.setExposedArea(Double.valueOf(textField_solArea.getText()));
         });
-        textField_solPower.addActionListener(e -> {
 
-        });
     }
     private void initParameters(){
 
@@ -241,6 +240,7 @@ public class TimeSim {
 
         satelliteTh = new ThermalSim(10, 0.06, 1.1, 10000);
         satelliteTh.setInitEnergy(0, 310);
+        satelliteTh.initSunExposure(1371, 0.01732, true);
         updateThermalParameters();
 
         timer = new Timer(1000, event -> timerAction());
@@ -408,6 +408,10 @@ public class TimeSim {
         textField_satCp.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getCp()));
         textField_satH.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getH()));
         textField_satMass.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getM()));
+
+        textField_solArea.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getExposedArea()));
+        textField_solRad.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getRadiationIntensity()));
+        textField_solPower.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getReceivedThermalPower()));
     }
 
     private void displayOrbitParameters(){
@@ -563,6 +567,7 @@ public class TimeSim {
                 stateLabel.setIcon(new ImageIcon("src/main/resources/icons/sun_on.png"));
                 chargeState = ChargeState.CHARGING;
                 generationON();
+                satelliteTh.startSunExposure();
             }
         } else {
             if (currentSolarState == SolarState.SUNNY){
@@ -572,6 +577,7 @@ public class TimeSim {
                 stateLabel.setIcon(new ImageIcon("src/main/resources/icons/sun_off.png"));
                 chargeState = ChargeState.DISCHARGING;
                 generationOFF();
+                satelliteTh.stopSunExposure();
             }
         }
 
@@ -616,8 +622,9 @@ public class TimeSim {
         checkBox_heater3.setSelected(battery.heater3.isOn());
         textField_heatersPower.setText(String.format(Locale.ROOT, "%.2f", battery.getTotalGeneratedHeat()));
 
-        satelliteTh.transferEnergy(cntMult);
+        satelliteTh.transferEnergy(cntMult, satelliteTh.getThermalPower());
 
+        textField_solPower.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getThermalPower()));
         textField_satTemp.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getTempCelsius()));
 
         ///////////////////////////////////////

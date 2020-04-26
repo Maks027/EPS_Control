@@ -852,7 +852,7 @@
                           <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <text value="g"/>
+                          <text value="kg"/>
                         </properties>
                       </component>
                       <component id="6d9f8" class="javax.swing.JLabel">
@@ -952,7 +952,9 @@
                             <maximum-size width="60" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <editable value="false"/>
+                        </properties>
                       </component>
                       <component id="79f2f" class="javax.swing.JTextField" binding="textField_heatersPower">
                         <constraints>
@@ -962,7 +964,9 @@
                             <maximum-size width="60" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <editable value="false"/>
+                        </properties>
                       </component>
                       <component id="92df4" class="javax.swing.JLabel">
                         <constraints>
@@ -1254,7 +1258,7 @@
                           </grid>
                         </constraints>
                         <properties>
-                          <editable value="true"/>
+                          <editable value="false"/>
                         </properties>
                       </component>
                       <component id="c67e8" class="javax.swing.JLabel">
@@ -1316,7 +1320,9 @@
                             <maximum-size width="60" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <editable value="false"/>
+                        </properties>
                       </component>
                       <component id="ecb08" class="javax.swing.JLabel">
                         <constraints>
