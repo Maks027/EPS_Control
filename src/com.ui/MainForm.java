@@ -63,7 +63,7 @@ public class MainForm {
         timeSim = new TimeSim();
 
         timer = new Timer(300, e -> timerAction());
-        timer.setInitialDelay(100);
+        timer.setInitialDelay(150);
   //      timer.start();
 
         storage = new Storage();
@@ -73,6 +73,7 @@ public class MainForm {
 
         fieldMap = new HashMap<>();
         checkBoxMap = new HashMap<>();
+
 
         fillMaps();
         addAllListeners();
@@ -172,6 +173,21 @@ public class MainForm {
         updateField(P_ID.Z_VOLTAGE);
         updateField(P_ID.Z_POS_CURRENT);
         updateField(P_ID.Z_NEG_CURRENT);
+
+        updateField(P_ID.BAT_TEMP_SENS1);
+        updateField(P_ID.BAT_TEMP_SENS2);
+        updateField(P_ID.BAT_TEMP_SENS3);
+        updateField(P_ID.BAT_TEMP_SENS4);
+
+        updateField(P_ID.MAX_TEMP1);
+        updateField(P_ID.MAX_TEMP2);
+        updateField(P_ID.MAX_TEMP3);
+        updateField(P_ID.MAX_TEMP4);
+
+        updateField(P_ID.MIN_TEMP1);
+        updateField(P_ID.MIN_TEMP2);
+        updateField(P_ID.MIN_TEMP3);
+        updateField(P_ID.MIN_TEMP4);
 
     }
 

@@ -53,9 +53,6 @@ public class Battery {
 
     @Getter
     private double batteryTemperature;
-    private double tempSens1;
-    private double tempSens2;
-    private double tempSens3;
 
     private double totalGeneratedHeat;
     public BatteryHeater heater1;

@@ -60,6 +60,14 @@ public class TimeSim {
     private JTextField textField_Cp;
     private JTextField textField_batTemp;
     private JTextField textField_heatersPower;
+    private JTextField textField_satMass;
+    private JTextField textField_satArea;
+    private JTextField textField_satH;
+    private JTextField textField_satCp;
+    private JTextField textField_solRad;
+    private JTextField textField_solArea;
+    private JTextField textField_solPower;
+    private JTextField textField_satTemp;
 
     private long currentTimerCnt = 0;
     private int cntMult = 1;
@@ -79,6 +87,7 @@ public class TimeSim {
     public Panel panelZ;
 
     public ThermalSim batteryTh;
+    public ThermalSim satelliteTh;
 
 
 
@@ -114,11 +123,12 @@ public class TimeSim {
     private double totalRequiredPower;
     private double totalConsumedPower;
     private double totalConsumedCurrent;
-
+    boolean isInit = false;
 
     public TimeSim() {
 
         initParameters();
+
 
         button_fastBackward.addActionListener(e -> FastBackwardAction());
         button_fastForward.addActionListener(e -> FastForwardAction());
@@ -198,11 +208,39 @@ public class TimeSim {
             batteryTh.setCp(Double.valueOf(textField_Cp.getText()));
             updateThermalParameters();
         });
+        textField_satMass.addActionListener(e -> {
+            satelliteTh.setM(Double.valueOf(textField_satMass.getText()));
+            updateThermalParameters();
+        });
+        textField_satArea.addActionListener(e -> {
+            satelliteTh.setA(Double.valueOf(textField_satArea.getText()));
+            updateThermalParameters();
+        });
+        textField_satH.addActionListener(e -> {
+            satelliteTh.setH(Double.valueOf(textField_satH.getText()));
+            updateThermalParameters();
+        });
+        textField_satCp.addActionListener(e -> {
+            satelliteTh.setCp(Double.valueOf(textField_satCp.getText()));
+            updateThermalParameters();
+        });
+        textField_solRad.addActionListener(e -> {
+
+        });
+        textField_solArea.addActionListener(e -> {
+
+        });
+        textField_solPower.addActionListener(e -> {
+
+        });
     }
     private void initParameters(){
 
         batteryTh = new ThermalSim(14, 0.004, 0.15, 4500);
         batteryTh.setInitEnergy(0, 290);
+
+        satelliteTh = new ThermalSim(10, 0.06, 1.1, 10000);
+        satelliteTh.setInitEnergy(0, 310);
         updateThermalParameters();
 
         timer = new Timer(1000, event -> timerAction());
@@ -277,8 +315,29 @@ public class TimeSim {
         textField_GenCurrent.setText(String.format(Locale.ROOT, "%.2f", totalGeneratedCurrent));
     }
 
+    public void initMap(Map<P_ID, Parameter> parameterMap){
+        double initTemp = this.battery.getBatteryTemperature();
+
+        parameterMap.get(P_ID.MAX_TEMP1).setDoubleValue(initTemp);
+        parameterMap.get(P_ID.MAX_TEMP2).setDoubleValue(initTemp);
+        parameterMap.get(P_ID.MAX_TEMP3).setDoubleValue(initTemp);
+        parameterMap.get(P_ID.MAX_TEMP4).setDoubleValue(initTemp);
+
+        parameterMap.get(P_ID.MIN_TEMP1).setDoubleValue(initTemp);
+        parameterMap.get(P_ID.MIN_TEMP2).setDoubleValue(initTemp);
+        parameterMap.get(P_ID.MIN_TEMP3).setDoubleValue(initTemp);
+        parameterMap.get(P_ID.MIN_TEMP4).setDoubleValue(initTemp);
+    }
+
+
 
     public void getValues(Map<P_ID, Parameter> parameterMap){
+
+        if (!isInit){
+            initMap(parameterMap);
+            isInit = true;
+        }
+
         parameterMap.get(P_ID.BATTERY_VOLTAGE).setDoubleValue(this.battery.getBatteryVoltage());
         parameterMap.get(P_ID.BATTERY_CURRENT).setDoubleValue(this.totalConsumedPower);
         parameterMap.get(P_ID.BCR_VOLTAGE).setDoubleValue(this.battery.getBatteryVoltage());
@@ -295,13 +354,60 @@ public class TimeSim {
         parameterMap.get(P_ID.Z_VOLTAGE).setDoubleValue(this.panelZ.getGeneratedVoltage());
         parameterMap.get(P_ID.Z_POS_CURRENT).setDoubleValue(this.panelZ.getGeneratedPositiveCurrent());
         parameterMap.get(P_ID.Z_NEG_CURRENT).setDoubleValue(this.panelZ.getGeneratedNegativeCurrent());
+
+        parameterMap.get(P_ID.BAT_TEMP_SENS1).setDoubleValue(this.battery.getBatteryTemperature());
+        parameterMap.get(P_ID.BAT_TEMP_SENS2).setDoubleValue(this.battery.getBatteryTemperature());
+        parameterMap.get(P_ID.BAT_TEMP_SENS3).setDoubleValue(this.battery.getBatteryTemperature());
+        parameterMap.get(P_ID.BAT_TEMP_SENS4).setDoubleValue(this.battery.getBatteryTemperature());
+
+        parameterMap.get(P_ID.MAX_TEMP1).setDoubleValue(getMaxTemp(this.battery.getBatteryTemperature(),
+                parameterMap.get(P_ID.MAX_TEMP1).getDoubleValue()));
+        parameterMap.get(P_ID.MAX_TEMP2).setDoubleValue(getMaxTemp(this.battery.getBatteryTemperature(),
+                parameterMap.get(P_ID.MAX_TEMP2).getDoubleValue()));
+        parameterMap.get(P_ID.MAX_TEMP3).setDoubleValue(getMaxTemp(this.battery.getBatteryTemperature(),
+                parameterMap.get(P_ID.MAX_TEMP3).getDoubleValue()));
+        parameterMap.get(P_ID.MAX_TEMP4).setDoubleValue(getMaxTemp(this.battery.getBatteryTemperature(),
+                parameterMap.get(P_ID.MAX_TEMP4).getDoubleValue()));
+
+        parameterMap.get(P_ID.MIN_TEMP1).setDoubleValue(getMinTemp(this.battery.getBatteryTemperature(),
+                parameterMap.get(P_ID.MIN_TEMP1).getDoubleValue()));
+        parameterMap.get(P_ID.MIN_TEMP2).setDoubleValue(getMinTemp(this.battery.getBatteryTemperature(),
+                parameterMap.get(P_ID.MIN_TEMP2).getDoubleValue()));
+        parameterMap.get(P_ID.MIN_TEMP3).setDoubleValue(getMinTemp(this.battery.getBatteryTemperature(),
+                parameterMap.get(P_ID.MIN_TEMP3).getDoubleValue()));
+        parameterMap.get(P_ID.MIN_TEMP4).setDoubleValue(getMinTemp(this.battery.getBatteryTemperature(),
+                parameterMap.get(P_ID.MIN_TEMP4).getDoubleValue()));
+
+
     }
+
+    private double getMaxTemp(double currentVal, double maxVal) {
+        if (currentVal >= maxVal){
+            return currentVal;
+        } else {
+            return maxVal;
+        }
+    }
+
+    private double getMinTemp(double currentVal, double minVal){
+        if (currentVal <= minVal){
+            return currentVal;
+        } else {
+            return minVal;
+        }
+    }
+
 
     private void updateThermalParameters(){
         textField_h.setText(String.format(Locale.ROOT, "%.2f", batteryTh.getH()));
         textField_batterySurface.setText(String.format(Locale.ROOT, "%.4f", batteryTh.getA()));
         textField_batteryMass.setText(String.format(Locale.ROOT, "%.2f", batteryTh.getM()));
         textField_Cp.setText(String.format(Locale.ROOT, "%.2f", batteryTh.getCp()));
+
+        textField_satArea.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getA()));
+        textField_satCp.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getCp()));
+        textField_satH.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getH()));
+        textField_satMass.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getM()));
     }
 
     private void displayOrbitParameters(){
@@ -509,6 +615,10 @@ public class TimeSim {
         checkBox_heater2.setSelected(battery.heater2.isOn());
         checkBox_heater3.setSelected(battery.heater3.isOn());
         textField_heatersPower.setText(String.format(Locale.ROOT, "%.2f", battery.getTotalGeneratedHeat()));
+
+        satelliteTh.transferEnergy(cntMult);
+
+        textField_satTemp.setText(String.format(Locale.ROOT, "%.2f", satelliteTh.getTempCelsius()));
 
         ///////////////////////////////////////
     }
